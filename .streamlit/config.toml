@@ -1,1 +1,17 @@
+    # Arquivo de configuração de tema para o Streamlit
 
+    [theme]
+    # Cor primária (botões, links, etc.) - Azul científico
+    primaryColor="#3b82f6"
+
+    # Cor do fundo principal - Branco levemente acinzentado (clean)
+    backgroundColor="#f0f2f6"
+
+    # Cor de fundo secundária (barra lateral, etc.)
+    secondaryBackgroundColor="#e5e7eb"
+
+    # Cor do texto principal - Cinza escuro
+    textColor="#1f2937"
+
+    # Tipo da fonte
+    font="sans serif"
