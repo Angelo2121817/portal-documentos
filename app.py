@@ -67,9 +67,17 @@ nome_cliente = st.text_input(
     help="Este nome será usado para identificar os documentos no e-mail."
 )
 
-st.markdown("---") # Adiciona uma linha de separação
+# --- INÍCIO DO NOVO BLOCO DO RODAPÉ ---
+st.markdown("---")
+st.success("✅ Tudo pronto! Após anexar os arquivos, o envio para o nosso sistema é automático.")
 
-st.info("PASSO 2: Anexe cada um dos documentos nos campos correspondentes abaixo.")
+# Rodapé profissional centralizado
+st.markdown("""
+    <div style="text-align: center; margin-top: 20px; font-size: 12px; color: grey;">
+        <p>Desenvolvido por Angelo | Contato: seu-email-aqui@exemplo.com</p>
+    </div>
+""", unsafe_allow_html=True)
+# --- FIM DO NOVO BLOCO DO RODAPÉ ---
 # --- FIM DO NOVO BLOCO DE INSTRUÇÕES ---
 
 # --- INÍCIO DO SUB-BLOCO DO LOOP (PARA SUBSTITUIR) ---
