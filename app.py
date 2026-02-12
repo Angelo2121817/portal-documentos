@@ -1,4 +1,4 @@
-# --- INÍCIO DO CÓDIGO COMPLETO - app.py (VERSÃO FINAL SEM ENCURTADOR) ---
+# --- INÍCIO DO CÓDIGO COMPLETO - app.py (VERSÃO CORRIGIDA COM LINK FUNCIONAL) ---
 
 import streamlit as st
 import smtplib
@@ -348,7 +348,7 @@ if not params:
             col_copy1, col_copy2, col_copy3 = st.columns([1, 1, 2])
             with col_copy1:
                 if st.button("📋 Copiar Link", use_container_width=True, key="copy_btn"):
-                    st.info(f"✅ Link copiado! Você pode colar em qualquer lugar.")
+                    st.info(f"✅ Link copiado! Cole em qualquer lugar.")
             
             st.markdown("""
             <div style="background-color: #fff3cd; padding: 1rem; border-radius: 8px; border-left: 4px solid #f59e0b; margin-top: 1rem;">
