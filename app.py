@@ -43,13 +43,13 @@ st.markdown("""
         font-weight: 700 !important;
     }
     
-    /* Header Unificado - BAIXADO 7CM (aprox 120px de margem) */
+    /* Header Unificado - BAIXADO 8CM (aprox 250px de margem) */
     .header-container {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        margin-top: 120px; /* <--- AQUI ESTÁ O ESPAÇAMENTO DO TOPO */
+        margin-top: 250px; /* <--- AQUI ESTÁ O ESPAÇAMENTO DO TOPO (8CM) */
         margin-bottom: 40px;
         padding-bottom: 20px;
         border-bottom: 1px solid #e2e8f0;
@@ -90,7 +90,7 @@ st.markdown("""
 
     /* BOTÕES SUAVIZADOS (Cinza Nuvem) */
     .stButton > button {
-        background-color: #64748b !important; /* <--- COR SUAVIZADA (Cinza Azulado Médio) */
+        background-color: #64748b !important; /* COR SUAVIZADA (Cinza Azulado Médio) */
         color: #ffffff !important;
         border: none !important;
         padding: 1rem 2rem !important;
