@@ -1,4 +1,4 @@
-# --- INÍCIO DO CÓDIGO COMPLETO - app.py ---
+# --- INÍCIO DO CÓDIGO COMPLETO - app.py (VERSÃO FINAL COM LISTA ATUALIZADA) ---
 
 import streamlit as st
 import smtplib
@@ -10,11 +10,11 @@ import urllib.parse
 # --- Bloco 1: Configuração da Página ---
 st.set_page_config(
     page_title="Portal de Documentos",
-    page_icon="📄"
+    page_icon="📄",
+    layout="wide" # Deixa a página mais larga para caber mais colunas
 )
 
 # --- Bloco 2: Função de Envio de E-mail (O "Motor") ---
-# Esta função não muda. Ela é o nosso sistema de envio.
 def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
     try:
         sender_email = st.secrets["SENDER_EMAIL"]
@@ -40,26 +40,39 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
         
         return True
     except Exception as e:
-        # Mostra um erro detalhado para você (Angelo), mas não para o cliente.
         print(f"Erro no envio de e-mail: {e}")
         return False
 
 # --- Bloco 3: Lógica Principal da Aplicação ---
 
-# Pega os parâmetros da URL (a parte depois do "?")
 params = st.query_params
 
-# MODO 1: MODO DE CONFIGURAÇÃO (Se não houver parâmetros na URL)
-# Esta é a tela que SÓ VOCÊ (Angelo) vai usar para criar o link para o cliente.
+# MODO 1: MODO DE CONFIGURAÇÃO (SÓ VOCÊ VÊ)
 if not params:
-    st.header("⚙️ Modo de Configuração")
-    st.info("Esta é a sua área de administrador. Use-a para criar um link personalizado para cada cliente.")
+    st.header("⚙️ Modo de Configuração do Portal")
+    st.info("Use esta área para criar um link de upload personalizado para cada cliente.")
 
-    # Lista MESTRA de todos os documentos possíveis. Você pode adicionar mais aqui.
+    # Lista MESTRA atualizada com todos os seus documentos.
     MASTER_LISTA_DOCUMENTOS = [
-        'Contrato Social', 'Cartão CNPJ', 'Procuração', 'Memorial Descritivo', 
-        'ART do Responsável Técnico', 'RG e CPF dos Sócios', 'Comprovante de Endereço',
-        'Licença de Operação Anterior', 'Outros'
+        'Matrícula do terreno ou IPTU mais recente',
+        'Contrato Social',
+        'Certificado do IBAMA',
+        'Procuração Assinada',
+        'Documentação EPP assinada',
+        'Certidão Simplificada da JUSCESP',
+        'Layout',
+        'Planta do Prédio',
+        'Cartão CNPJ',
+        'Certidão de Uso e Ocupação do Solo',
+        'CICAR rural',
+        'Dados do Proprietário',
+        'Bombeiros (AVCB)',
+        'Contas de Agua ou Outorga',
+        'Fluxograma do Processo Produtivo',
+        'CADRI',
+        'Laudo Analítico',
+        'Comprovante de Pagamento (CETESB)',
+        'Copia CNH Representante Legal'
     ]
     
     st.markdown("#### PASSO 1: Digite o nome do cliente")
@@ -68,7 +81,7 @@ if not params:
     st.markdown("#### PASSO 2: Selecione os documentos pendentes")
     documentos_selecionados = st.multiselect(
         "Selecione os documentos que você precisa que este cliente envie:",
-        options=MASTER_LISTA_DOCUMENTOS
+        options=sorted(MASTER_LISTA_DOCUMENTOS) # Ordena a lista em ordem alfabética para facilitar
     )
 
     if st.button("🔗 GERAR LINK PARA O CLIENTE"):
@@ -77,42 +90,38 @@ if not params:
         elif not documentos_selecionados:
             st.error("Por favor, selecione pelo menos um documento.")
         else:
-            # Codifica os parâmetros para serem seguros na URL
             docs_param = ",".join(urllib.parse.quote(doc) for doc in documentos_selecionados)
             cliente_param = urllib.parse.quote(nome_cliente_config)
             
-            # Gera a URL completa
-            # ATENÇÃO: Se você tiver um domínio personalizado, troque a base da URL.
-            base_url = st.get_option("server.baseUrlPath") # Pega a URL base do Streamlit
+            # Pega a URL base do Streamlit de forma dinâmica
+            base_url = st.get_option("server.baseUrlPath")
             url_gerada = f"https://{base_url}?cliente={cliente_param}&docs={docs_param}"
             
             st.success("✅ Link gerado com sucesso! Copie e envie para o seu cliente.")
             st.code(url_gerada)
 
-# MODO 2: MODO CLIENTE (Se a URL tiver parâmetros)
-# Esta é a tela que o seu cliente vai ver ao acessar o link que você gerou.
+# MODO 2: MODO CLIENTE (O QUE O CLIENTE VÊ)
 else:
-    # Pega o nome do cliente e a lista de documentos da URL
     nome_cliente = urllib.parse.unquote(params.get("cliente", "Não identificado"))
     docs_string = urllib.parse.unquote(params.get("docs", ""))
     documentos_necessarios = docs_string.split(',') if docs_string else []
 
-    # --- Interface do Cliente ---
-    col1, col2 = st.columns([1, 4])
+    col1, col2 = st.columns([1, 6])
     with col1:
-        st.image("https://i.imgur.com/3z2e20a.png", width=100)
+        st.image("https://i.imgur.com/3z2e20a.png", width=120)
     with col2:
-        st.title('Portal de Documentos')
-        st.write(f"Enviado para: **{nome_cliente}**")
+        st.title('Portal de Envio de Documentos')
+        st.subheader(f"Cliente: {nome_cliente}")
     
     st.markdown("---")
-    st.info("Por favor, anexe cada um dos documentos solicitados nos campos correspondentes abaixo.")
+    st.info("Por favor, anexe cada um dos documentos solicitados nos campos correspondentes abaixo. O envio só será realizado após você clicar no botão 'ENVIAR' no final da página.")
 
     if not documentos_necessarios:
         st.error("Link inválido ou nenhum documento foi solicitado.")
     else:
         arquivos_anexados = {}
-        num_colunas = 2
+        # Ajusta o número de colunas com base na quantidade de documentos
+        num_colunas = 3 if len(documentos_necessarios) > 5 else 2
         cols = st.columns(num_colunas)
 
         for i, documento in enumerate(documentos_necessarios):
@@ -144,11 +153,11 @@ else:
                             erros.append(doc)
                     
                     if not erros:
+                        st.balloons()
                         st.success(f"🎉 Sucesso! {sucessos} documento(s) foram enviados.")
                     else:
                         st.error(f"Falha no envio para: {', '.join(erros)}. Por favor, tente novamente.")
     
-    # Rodapé
     st.markdown("""
         <div style="text-align: center; margin-top: 40px; font-size: 12px; color: grey;">
             <p>Desenvolvido por Angelo</p>
