@@ -5,139 +5,152 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 import urllib.parse
 
-# Configuração da página
+# --- Bloco 1: Configuração da Página ---
 st.set_page_config(
-    page_title="Portal de Documentos - Metal Química Consultoria",
-    page_icon="📄",
+    page_title="Portal Metal Química",
+    page_icon="⚗️",
     layout="wide"
 )
 
-# Estilos CSS personalizados
+# --- CSS PREMIUM (VISUAL PROFISSIONAL) ---
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
-* { font-family: 'Inter', sans-serif; }
+    /* Reset e Fonte Global */
+    * { font-family: 'Inter', sans-serif; }
 
-[data-testid="stAppViewContainer"] {
-    background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 50%, #06b6d4 100%) !important;
-    padding: 0 !important;
-}
+    /* Fundo Fluido (Deep Ocean Gradient) */
+    [data-testid="stAppViewContainer"] {
+        background: linear-gradient(120deg, #0f172a 0%, #1e3a8a 40%, #0ea5e9 100%) !important;
+        background-attachment: fixed !important;
+    }
 
-.main {
-    background-color: rgba(255,255,255,0.85) !important;
-    backdrop-filter: blur(10px) !important;
-    border-radius: 12px !important;
-    padding: 2rem !important;
-    margin: 2rem !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-}
+    /* Container Principal (Vidro Fosco Profissional) */
+    .main .block-container {
+        background-color: rgba(255, 255, 255, 0.96) !important; /* Branco quase sólido para leitura */
+        border-radius: 16px !important;
+        padding: 3rem !important;
+        margin-top: 2rem !important;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3) !important;
+        max-width: 1200px !important;
+    }
 
-h1, h2, h3 {
-    color: #0f172a;
-    font-weight: 700;
-}
+    /* Títulos */
+    h1, h2, h3 {
+        color: #0f172a !important; /* Azul Escuro Profundo */
+        font-weight: 700 !important;
+        letter-spacing: -0.5px;
+    }
+    
+    p, li, label {
+        color: #334155 !important; /* Cinza Chumbo para leitura confortável */
+        font-size: 1rem;
+    }
 
-h1 { font-size: 2.8rem !important; }
-h2 { font-size: 1.9rem !important; }
-h3 { font-size: 1.3rem !important; }
+    /* Header Personalizado com Logo */
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 40px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #e2e8f0;
+        flex-wrap: wrap;
+    }
+    
+    .header-logo {
+        height: 80px;
+        width: auto;
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+    }
+    
+    .header-title {
+        font-size: 2.2rem;
+        color: #1e3a8a;
+        font-weight: 800;
+        text-transform: uppercase;
+        margin: 0;
+    }
 
-.stButton > button {
-    background: linear-gradient(135deg, #0284c7, #3b82f6);
-    border-radius: 8px;
-    border: none;
-    color: white;
-    padding: 0.7rem 1.3rem;
-    font-size: 1rem;
-    font-weight: 600;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-    transition: 0.3s;
-}
-.stButton > button:hover {
-    transform: translateY(-3px);
-    background: linear-gradient(135deg, #0369a1, #2563eb);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
-}
+    /* Cards de Documentos */
+    .doc-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-left: 5px solid #0ea5e9; /* Detalhe Ciano */
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .doc-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(14, 165, 233, 0.15);
+        border-left-color: #3b82f6;
+    }
 
-.metal-card {
-    background: rgba(255,255,255,0.9);
-    border-left: 5px solid #0284c7;
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-}
+    .doc-title {
+        font-weight: 600;
+        color: #1e40af;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
 
-.documento {
-    background: rgba(255,255,255,0.9);
-    padding: 1rem;
-    border-radius: 6px;
-    border-left: 4px solid #0ea5e9;
-    margin-bottom: 1rem;
-    transition: 0.25s;
-}
-.documento:hover {
-    transform: translateX(5px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-}
+    /* Botões Estilizados */
+    .stButton > button {
+        background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%) !important;
+        color: white !important;
+        border: none !important;
+        padding: 0.8rem 2rem !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
+        transition: all 0.3s ease !important;
+        width: 100%;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.5) !important;
+        filter: brightness(1.1);
+    }
 
-.footer {
-    background: linear-gradient(135deg, rgba(14,165,233,0.1) 0%, rgba(59,130,246,0.1) 100%);
-    border-top: 1px solid rgba(255,255,255,0.3);
-    padding: 2rem 1rem;
-    margin-top: 3rem;
-    border-radius: 0 0 12px 12px;
-    text-align: center;
-    backdrop-filter: blur(8px);
-}
-.footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
-}
+    /* Inputs e Selects */
+    .stTextInput > div > div > input, .stMultiSelect > div > div > div {
+        background-color: #f1f5f9;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        color: #0f172a;
+    }
 
-.footer-logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-}
+    /* Rodapé */
+    .footer-container {
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e2e8f0;
+        text-align: center;
+    }
+    
+    .footer-link {
+        color: #0ea5e9;
+        text-decoration: none;
+        font-weight: 600;
+        margin: 0 10px;
+        transition: color 0.2s;
+    }
+    
+    .footer-link:hover {
+        color: #1e3a8a;
+    }
 
-.footer-logo img {
-    height: 40px;
-    width: auto;
-}
-
-.footer-info {
-    color: #475569;
-    font-size: 0.95rem;
-    margin: 0.5rem 0;
-    font-weight: 400;
-}
-
-.footer-social {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    flex-wrap: wrap;
-    margin-top: 1rem;
-}
-
-.footer-social a {
-    color: #3b82f6;
-    text-decoration: none;
-    font-weight: 500;
-}
 </style>
 """, unsafe_allow_html=True)
 
-# Função de envio de e-mail
+# --- Bloco 2: Função de Envio de E-mail (Mantida Intacta) ---
 def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
     try:
         sender_email = st.secrets["SENDER_EMAIL"]
@@ -166,22 +179,24 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
         print(f"Erro no envio de e-mail: {e}")
         return False
 
-# Lógica principal da aplicação
+# --- Bloco 3: Lógica Principal ---
+
 params = st.query_params
+LOGO_URL = "https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png"
 
-# Modo Admin
+# --- HEADER UNIFICADO (Aparece em ambas as telas) ---
+st.markdown(f"""
+    <div class="header-container">
+        <img src="{LOGO_URL}" class="header-logo">
+        <h1 class="header-title">Metal Química Consultoria</h1>
+    </div>
+""", unsafe_allow_html=True)
+
+
+# MODO 1: ADMIN
 if not params:
-    col1, col2 = st.columns([1.3, 3])
-    with col1:
-        st.image(
-            "https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png",
-            width=300
-        )
-    with col2:
-        st.title("⚗️ Portal de Gestão de Documentos")
-        st.subheader("Metal Química Consultoria")
-
-    st.markdown('<div class="metal-card"><h3>⚙️ Configuração do Link do Cliente</h3></div>', unsafe_allow_html=True)
+    st.markdown("### ⚙️ Painel de Controle - Gerador de Links")
+    st.info("Configure abaixo o link exclusivo para seu cliente enviar os documentos.")
 
     MASTER_LISTA_DOCUMENTOS = [
         'Matrícula do terreno ou IPTU mais recente',
@@ -202,111 +217,115 @@ if not params:
         'CADRI',
         'Laudo Analítico',
         'Comprovante de Pagamento (CETESB)',
-        'Cópia da CNH do Representante Legal'
+        'Copia CNH Representante Legal'
     ]
     
-    st.markdown("### PASSO 1: Nome do Cliente")
-    nome_cliente_config = st.text_input("Nome da Empresa", placeholder="Ex: Metalúrgica Alfa LTDA")
+    col_admin1, col_admin2 = st.columns(2)
+    
+    with col_admin1:
+        nome_cliente_config = st.text_input("Nome do Cliente / Empresa")
+    
+    with col_admin2:
+        documentos_selecionados = st.multiselect(
+            "Selecione os documentos solicitados:",
+            options=sorted(MASTER_LISTA_DOCUMENTOS)
+        )
 
-    st.markdown("### PASSO 2: Documentos Necessários")
-    documentos_selecionados = st.multiselect(
-        "Selecione os documentos pendentes:",
-        options=sorted(MASTER_LISTA_DOCUMENTOS)
-    )
+    st.markdown("<br>", unsafe_allow_html=True)
 
-    if st.button("🔗 GERAR LINK PARA O CLIENTE"):
+    if st.button("🔗 GERAR LINK SEGURO"):
         if not nome_cliente_config:
-            st.error("Por favor, digite o nome do cliente.")
+            st.error("⚠️ Por favor, digite o nome do cliente.")
         elif not documentos_selecionados:
-            st.error("Por favor, selecione pelo menos um documento.")
+            st.error("⚠️ Por favor, selecione pelo menos um documento.")
         else:
             docs_param = ",".join(urllib.parse.quote(doc) for doc in documentos_selecionados)
             cliente_param = urllib.parse.quote(nome_cliente_config)
             
+            # URL BASE
             URL_BASE_DA_SUA_APP = "app-documentos-7l5ecrvyv7lhjl3ska9e3t.streamlit.app"
             url_gerada = f"https://{URL_BASE_DA_SUA_APP}?cliente={cliente_param}&docs={docs_param}"
             
             st.success("✅ Link gerado com sucesso!")
             st.code(url_gerada)
-            if st.button("📋 Copiar Link"):
-                st.info("Use CTRL+C para copiar o link acima.")
 
-# Modo Cliente
+# MODO 2: CLIENTE
 else:
-    nome_cliente = urllib.parse.unquote(params.get("cliente", "Cliente"))
-    documentos_necessarios = urllib.parse.unquote(params.get("docs", "")).split(',') if params.get("docs") else []
+    nome_cliente = urllib.parse.unquote(params.get("cliente", "Não identificado"))
+    docs_string = urllib.parse.unquote(params.get("docs", ""))
+    documentos_necessarios = docs_string.split(',') if docs_string else []
 
-    col1, col2 = st.columns([1, 6])
-    with col1:
-        st.image("https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png", width=120)
-    with col2:
-        st.title('Portal de Envio de Documentos')
-        st.subheader(f"Cliente: **{nome_cliente}**")
-
-    st.markdown('<div class="metal-card"><h3>📤 Envie seus documentos</h3></div>', unsafe_allow_html=True)
-    st.info("Por favor, anexe cada um dos documentos solicitados nos campos correspondentes abaixo. O envio só será realizado após você clicar no botão 'ENVIAR' no final da página.")
+    st.markdown(f"<h2 style='text-align: center; color: #334155;'>Portal de Envio de Documentos</h2>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='text-align: center; color: #0ea5e9; margin-bottom: 30px;'>Cliente: {nome_cliente}</h3>", unsafe_allow_html=True)
+    
+    st.info("ℹ️ **Instruções:** Anexe os arquivos solicitados abaixo. O envio final é feito ao clicar no botão 'ENVIAR' no final da página.")
 
     if not documentos_necessarios:
-        st.error("Link inválido ou nenhum documento foi solicitado.")
+        st.error("Link inválido ou expirado.")
     else:
         arquivos_anexados = {}
-        num_colunas = 3 if len(documentos_necessarios) > 5 else 2
+        # Layout responsivo inteligente
+        num_colunas = 3 if len(documentos_necessarios) > 4 else 2
         cols = st.columns(num_colunas)
 
         for i, documento in enumerate(documentos_necessarios):
             with cols[i % num_colunas]:
-                st.markdown(f'<div class="documento">📄 <b>{documento}</b></div>', unsafe_allow_html=True)
+                # Card HTML personalizado
+                st.markdown(f"""
+                <div class="doc-card">
+                    <span class="doc-title">📄 {documento}</span>
+                </div>
+                """, unsafe_allow_html=True)
+                
                 uploaded_file = st.file_uploader(
-                    f'Selecione o arquivo {documento}',
+                    f"Selecione o arquivo para {documento}", # Label simplificada
                     type=['pdf', 'jpg', 'png', 'docx', 'jpeg'],
-                    key=documento
+                    key=documento,
+                    label_visibility="collapsed" # Esconde label padrão para usar o card
                 )
                 if uploaded_file is not None:
                     arquivos_anexados[documento] = uploaded_file
+                    st.success("Arquivo anexado!")
 
         st.markdown("---")
-        
-        if st.button('🚀 ENVIAR TODOS OS DOCUMENTOS'):
-            if not arquivos_anexados:
-                st.warning("Nenhum documento foi anexado.")
-            else:
-                with st.spinner("Enviando documentos... Por favor, aguarde."):
-                    erros = []
-                    sucessos = 0
-                    for doc, arquivo in arquivos_anexados.items():
-                        file_content = arquivo.getvalue()
-                        sucesso = enviar_email_com_anexo(f"{doc} ({nome_cliente})", file_content, arquivo.name)
-                        if sucesso:
-                            sucessos += 1
-                        else:
-                            erros.append(doc)
-                    
-                    if not erros:
-                        st.balloons()
-                        st.success(f"🎉 Sucesso! {sucessos} documento(s) foram enviados.")
-                    else:
-                        st.error(f"Falha no envio para: {', '.join(erros)}. Por favor, tente novamente.")
 
-# Rodapé
-st.markdown('''
-<div class="footer">
-    <div class="footer-content">
-        <div class="footer-logo">
-            <img src="https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png" 
-                 alt="Logo Metal Química"
-                 onerror="this.style.display='none';">
-            <h3 style="color: #0f172a; margin: 0; font-size: 1.4rem; font-weight: 700;">
-                Metal Química Consultoria
-            </h3>
-        </div>
-        <div class="footer-info">
-            Portal de Gestão de Documentos | Licenças Ambientais e Regularizações
-        </div>
-        <div class="footer-social">
-            <a href="mailto:metalquimicaconsultoria@gmail.com" style="color: #3b82f6; text-decoration: none; font-weight: 500;">📧 Contato</a>
-            <a href="tel:+551234567890" style="color: #3b82f6; text-decoration: none; font-weight: 500;">📞 Telefone</a>
-            <span style="color: #64748b; font-size: 0.85rem;">© 2026 Metal Química. Todos os direitos reservados.</span>
-        </div>
+        col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
+        with col_btn2:
+            if st.button('🚀 ENVIAR TODOS OS DOCUMENTOS'):
+                if not arquivos_anexados:
+                    st.warning("⚠️ Nenhum documento foi anexado ainda.")
+                else:
+                    with st.spinner("Enviando seus documentos com segurança..."):
+                        erros = []
+                        sucessos = 0
+                        for doc, arquivo in arquivos_anexados.items():
+                            file_content = arquivo.getvalue()
+                            sucesso = enviar_email_com_anexo(f"{doc} ({nome_cliente})", file_content, arquivo.name)
+                            if sucesso:
+                                sucessos += 1
+                            else:
+                                erros.append(doc)
+                        
+                        if not erros:
+                            st.balloons()
+                            st.success(f"🎉 Sucesso Absoluto! {sucessos} documento(s) foram enviados para nossa equipe.")
+                        else:
+                            st.error(f"Ocorreu um erro ao enviar: {', '.join(erros)}. Tente novamente.")
+
+# --- RODAPÉ PROFISSIONAL ATUALIZADO ---
+st.markdown("""
+<div class="footer-container">
+    <p style="font-weight: 600; color: #1e3a8a; margin-bottom: 10px;">METAL QUÍMICA CONSULTORIA</p>
+    <p style="font-size: 0.9rem; color: #64748b;">Excelência em Gestão Ambiental e Regularizações</p>
+    
+    <div style="margin-top: 20px;">
+        <a href="https://wa.me/5517991434883" target="_blank" class="footer-link">📱 (17) 99143-4883</a>
+        <span style="color: #cbd5e1;">|</span>
+        <a href="mailto:metalquimicaconsultoria@gmail.com" class="footer-link">📧 metalquimicaconsultoria@gmail.com</a>
     </div>
+    
+    <p style="margin-top: 30px; font-size: 0.8rem; color: #94a3b8;">
+        © 2026 Metal Química. Todos os direitos reservados.
+    </p>
 </div>
-''', unsafe_allow_html=True)
+""", unsafe_allow_html=True)
