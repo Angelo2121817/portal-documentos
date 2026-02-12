@@ -60,7 +60,17 @@ st.title('📄 Portal de Upload de Documentos')
 st.write("Por favor, envie os documentos necessários para o licenciamento ambiental.")
 
 # Adiciona um campo para o nome do cliente/empresa
-nome_cliente = st.text_input("Nome do Cliente ou Empresa*", help="Este nome será usado para organizar os documentos.")
+# --- INÍCIO DO NOVO BLOCO DE INSTRUÇÕES ---
+st.info("PASSO 1: Preencha o nome do cliente/empresa para identificação.")
+nome_cliente = st.text_input(
+    "Nome do Cliente ou Empresa*", 
+    help="Este nome será usado para identificar os documentos no e-mail."
+)
+
+st.markdown("---") # Adiciona uma linha de separação
+
+st.info("PASSO 2: Anexe cada um dos documentos nos campos correspondentes abaixo.")
+# --- FIM DO NOVO BLOCO DE INSTRUÇÕES ---
 
 # --- INÍCIO DO SUB-BLOCO DO LOOP (PARA SUBSTITUIR) ---
 # --- INÍCIO DO NOVO SUB-BLOCO COM COLUNAS ---
