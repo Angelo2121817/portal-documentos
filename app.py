@@ -14,6 +14,7 @@ st.set_page_config(
 # --- FIM DO BLOCO 2: CONFIGURAÇÃO DA PÁGINA ---
 
 # --- FUNÇÃO DE ENVIO DE E-MAIL ---
+# --- INÍCIO DO BLOCO 3: FUNÇÃO DE ENVIO DE E-MAIL ---
 def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
     try:
         # Pega as credenciais dos Secrets do Streamlit
@@ -46,7 +47,7 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
     except Exception as e:
         st.error(f"Ocorreu um erro ao enviar o e-mail: {e}")
         return False
-
+# --- FIM DO BLOCO 3: FUNÇÃO DE ENVIO DE E-MAIL ---
 # --- INTERFACE DA APLICAÇÃO ---
 st.title('📄 Portal de Upload de Documentos')
 st.write("Por favor, envie os documentos necessários para o licenciamento ambiental.")
