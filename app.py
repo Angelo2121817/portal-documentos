@@ -1,4 +1,4 @@
-# --- INÍCIO DO CÓDIGO COMPLETO - app.py (VERSÃO COM LOGO MAIOR E LINK ENCURTADO) ---
+# --- INÍCIO DO CÓDIGO COMPLETO - app.py (VERSÃO FINAL SEM ENCURTADOR) ---
 
 import streamlit as st
 import smtplib
@@ -6,7 +6,6 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 import urllib.parse
-import requests
 
 # --- Bloco 1: Configuração da Página ---
 st.set_page_config(
@@ -253,19 +252,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- Bloco 1.6: Função para Encurtar URL ---
-def encurtar_url(url_longa):
-    """Encurta uma URL usando TinyURL"""
-    try:
-        url_api = f"https://tinyurl.com/api-create.php?url={urllib.parse.quote(url_longa)}"
-        response = requests.get(url_api, timeout=5)
-        if response.status_code == 200:
-            return response.text.strip()
-        else:
-            return url_longa
-    except:
-        return url_longa
-
 # --- Bloco 2: Função de Envio de E-mail ---
 def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
     try:
@@ -348,24 +334,21 @@ if not params:
             docs_param = ",".join(urllib.parse.quote(doc) for doc in documentos_selecionados)
             cliente_param = urllib.parse.quote(nome_cliente_config)
             URL_BASE_DA_SUA_APP = "app-documentos-7l5ecrvyv7lhjl3ska9e3t.streamlit.app"
-            url_longa = f"https://{URL_BASE_DA_SUA_APP}?cliente={cliente_param}&docs={docs_param}"
-            
-            # Encurtar a URL
-            url_encurtada = encurtar_url(url_longa)
+            url_gerada = f"https://{URL_BASE_DA_SUA_APP}?cliente={cliente_param}&docs={docs_param}"
             
             st.success("✅ Link gerado com sucesso!")
             st.markdown("""
             <div style="background-color: #f1f5f9; padding: 1rem; border-radius: 8px; border: 2px solid #3b82f6; margin: 1rem 0;">
-                <p style="margin: 0 0 0.75rem 0; color: #64748b; font-size: 0.875rem;"><strong>Link Encurtado:</strong></p>
+                <p style="margin: 0 0 0.75rem 0; color: #64748b; font-size: 0.875rem;"><strong>Link para o Cliente:</strong></p>
             </div>
             """, unsafe_allow_html=True)
             
-            st.code(url_encurtada, language="text")
+            st.code(url_gerada, language="text")
             
             col_copy1, col_copy2, col_copy3 = st.columns([1, 1, 2])
             with col_copy1:
                 if st.button("📋 Copiar Link", use_container_width=True, key="copy_btn"):
-                    st.info(f"✅ Link para copiar: {url_encurtada}")
+                    st.info(f"✅ Link copiado! Você pode colar em qualquer lugar.")
             
             st.markdown("""
             <div style="background-color: #fff3cd; padding: 1rem; border-radius: 8px; border-left: 4px solid #f59e0b; margin-top: 1rem;">
