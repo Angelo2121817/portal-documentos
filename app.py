@@ -1,4 +1,4 @@
-# --- INÍCIO DO CÓDIGO COMPLETO - app.py (VERSÃO FINAL CORRIGIDA) ---
+# --- INÍCIO DO CÓDIGO COMPLETO - app.py (VERSÃO COM LOGO MAIOR E LINK ENCURTADO) ---
 
 import streamlit as st
 import smtplib
@@ -6,6 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 import urllib.parse
+import requests
 
 # --- Bloco 1: Configuração da Página ---
 st.set_page_config(
@@ -252,6 +253,19 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# --- Bloco 1.6: Função para Encurtar URL ---
+def encurtar_url(url_longa):
+    """Encurta uma URL usando TinyURL"""
+    try:
+        url_api = f"https://tinyurl.com/api-create.php?url={urllib.parse.quote(url_longa)}"
+        response = requests.get(url_api, timeout=5)
+        if response.status_code == 200:
+            return response.text.strip()
+        else:
+            return url_longa
+    except:
+        return url_longa
+
 # --- Bloco 2: Função de Envio de E-mail ---
 def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
     try:
@@ -281,9 +295,9 @@ params = st.query_params
 
 if not params:
     # MODO ADMIN
-    col_logo, col_title = st.columns([1.2, 4.8])
+    col_logo, col_title = st.columns([1, 5])
     with col_logo:
-        st.image("https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png", width=200)
+        st.image("https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png", width=250)
     with col_title:
         st.title("⚗️ Portal de Documentos")
         st.markdown("**Metal Química Consultoria** - Gerenciamento de Documentação")
@@ -334,18 +348,30 @@ if not params:
             docs_param = ",".join(urllib.parse.quote(doc) for doc in documentos_selecionados)
             cliente_param = urllib.parse.quote(nome_cliente_config)
             URL_BASE_DA_SUA_APP = "app-documentos-7l5ecrvyv7lhjl3ska9e3t.streamlit.app"
-            url_gerada = f"https://{URL_BASE_DA_SUA_APP}?cliente={cliente_param}&docs={docs_param}"
+            url_longa = f"https://{URL_BASE_DA_SUA_APP}?cliente={cliente_param}&docs={docs_param}"
+            
+            # Encurtar a URL
+            url_encurtada = encurtar_url(url_longa)
             
             st.success("✅ Link gerado com sucesso!")
             st.markdown("""
             <div style="background-color: #f1f5f9; padding: 1rem; border-radius: 8px; border: 2px solid #3b82f6; margin: 1rem 0;">
-                <p style="margin: 0 0 0.75rem 0; color: #64748b; font-size: 0.875rem;">Copie o link abaixo e envie para o cliente:</p>
+                <p style="margin: 0 0 0.75rem 0; color: #64748b; font-size: 0.875rem;"><strong>Link Encurtado:</strong></p>
             </div>
             """, unsafe_allow_html=True)
             
-            st.code(url_gerada, language="text")
+            st.code(url_encurtada, language="text")
             
-            st.info("✅ Link exibido acima. Use Ctrl+C (ou Cmd+C no Mac) para copiar.")
+            col_copy1, col_copy2, col_copy3 = st.columns([1, 1, 2])
+            with col_copy1:
+                if st.button("📋 Copiar Link", use_container_width=True, key="copy_btn"):
+                    st.info(f"✅ Link para copiar: {url_encurtada}")
+            
+            st.markdown("""
+            <div style="background-color: #fff3cd; padding: 1rem; border-radius: 8px; border-left: 4px solid #f59e0b; margin-top: 1rem;">
+                <p style="margin: 0; color: #856404; font-size: 0.875rem;"><strong>💡 Dica:</strong> Você pode copiar o link acima usando Ctrl+C (ou Cmd+C no Mac) e enviar para o cliente via WhatsApp, Email ou qualquer outro meio.</p>
+            </div>
+            """, unsafe_allow_html=True)
     
     st.markdown("---")
     st.markdown("""
@@ -361,9 +387,9 @@ else:
     documentos_necessarios = docs_string.split(',') if docs_string else []
     
     # Header
-    col_logo, col_title = st.columns([1.2, 4.8])
+    col_logo, col_title = st.columns([1, 5])
     with col_logo:
-        st.image("https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png", width=200)
+        st.image("https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png", width=250)
     with col_title:
         st.title("⚗️ Portal de Envio de Documentos")
         st.markdown(f"**Cliente:** {nome_cliente}")
