@@ -1,4 +1,4 @@
-# --- INÍCIO DO CÓDIGO COMPLETO - app.py (VERSÃO FINAL COM LISTA ATUALIZADA) ---
+# --- INÍCIO DO CÓDIGO COMPLETO - app.py (VERSÃO FINAL COM TEMA VISUAL) ---
 
 import streamlit as st
 import smtplib
@@ -13,6 +13,36 @@ st.set_page_config(
     page_icon="📄",
     layout="wide" # Deixa a página mais larga para caber mais colunas
 )
+
+# --- Bloco 1.5: Estilo CSS Customizado (Tema de Química) ---
+# Injeta um CSS para aplicar um tema visual sutil e profissional.
+st.markdown("""
+<style>
+    /* Cor de fundo principal da página */
+    [data-testid="stAppViewContainer"] > .main {
+        background-color: #f0f2f6;
+    }
+
+    /* Cor dos títulos e subtítulos */
+    h1, h2, h3 {
+        color: #1f2937;
+    }
+
+    /* Estilo dos botões principais */
+    .stButton>button {
+        border: 2px solid #3b82f6;
+        background-color: #3b82f6;
+        color: #ffffff;
+        border-radius: 5px;
+    }
+    .stButton>button:hover {
+        border: 2px solid #2563eb;
+        background-color: #2563eb;
+        color: #ffffff;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 
 # --- Bloco 2: Função de Envio de E-mail (O "Motor") ---
 def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
@@ -52,26 +82,12 @@ if not params:
     st.header("⚙️ Modo de Configuração do Portal")
     st.info("Use esta área para criar um link de upload personalizado para cada cliente.")
 
-    # Lista MESTRA atualizada com todos os seus documentos.
     MASTER_LISTA_DOCUMENTOS = [
-        'Matrícula do terreno ou IPTU mais recente',
-        'Contrato Social',
-        'Certificado do IBAMA',
-        'Procuração Assinada',
-        'Documentação EPP assinada',
-        'Certidão Simplificada da JUSCESP',
-        'Layout',
-        'Planta do Prédio',
-        'Cartão CNPJ',
-        'Certidão de Uso e Ocupação do Solo',
-        'CICAR rural',
-        'Dados do Proprietário',
-        'Bombeiros (AVCB)',
-        'Contas de Agua ou Outorga',
-        'Fluxograma do Processo Produtivo',
-        'CADRI',
-        'Laudo Analítico',
-        'Comprovante de Pagamento (CETESB)',
+        'Matrícula do terreno ou IPTU mais recente', 'Contrato Social', 'Certificado do IBAMA',
+        'Procuração Assinada', 'Documentação EPP assinada', 'Certidão Simplificada da JUSCESP',
+        'Layout', 'Planta do Prédio', 'Cartão CNPJ', 'Certidão de Uso e Ocupação do Solo',
+        'CICAR rural', 'Dados do Proprietário', 'Bombeiros (AVCB)', 'Contas de Agua ou Outorga',
+        'Fluxograma do Processo Produtivo', 'CADRI', 'Laudo Analítico', 'Comprovante de Pagamento (CETESB)',
         'Copia CNH Representante Legal'
     ]
     
@@ -81,7 +97,7 @@ if not params:
     st.markdown("#### PASSO 2: Selecione os documentos pendentes")
     documentos_selecionados = st.multiselect(
         "Selecione os documentos que você precisa que este cliente envie:",
-        options=sorted(MASTER_LISTA_DOCUMENTOS) # Ordena a lista em ordem alfabética para facilitar
+        options=sorted(MASTER_LISTA_DOCUMENTOS)
     )
 
     if st.button("🔗 GERAR LINK PARA O CLIENTE"):
@@ -90,24 +106,15 @@ if not params:
         elif not documentos_selecionados:
             st.error("Por favor, selecione pelo menos um documento.")
         else:
-           # --- INÍCIO DO NOVO BLOCO DE GERAÇÃO DE LINK (CORRIGIDO) ---
             docs_param = ",".join(urllib.parse.quote(doc) for doc in documentos_selecionados)
             cliente_param = urllib.parse.quote(nome_cliente_config)
             
-            # =======================================================================
-            # ATENÇÃO, ANGELO: COLOQUE A URL BASE DA SUA APLICAÇÃO AQUI
-            # Exemplo: se a sua URL é "https://meu-portal-docs.streamlit.app",
-            # você deve escrever: URL_BASE_DA_SUA_APP = "meu-portal-docs.streamlit.app"
-            # =======================================================================
             URL_BASE_DA_SUA_APP = "app-documentos-7l5ecrvyv7lhjl3ska9e3t.streamlit.app"
-            # =======================================================================
-
-            # Monta o link final e correto
             url_gerada = f"https://{URL_BASE_DA_SUA_APP}?cliente={cliente_param}&docs={docs_param}"
             
             st.success("✅ Link gerado com sucesso! Copie e envie para o seu cliente.")
             st.code(url_gerada)
-# --- FIM DO NOVO BLOCO DE GERAÇÃO DE LINK (CORRIGIDO) ---
+
 # MODO 2: MODO CLIENTE (O QUE O CLIENTE VÊ)
 else:
     nome_cliente = urllib.parse.unquote(params.get("cliente", "Não identificado"))
@@ -116,6 +123,7 @@ else:
 
     col1, col2 = st.columns([1, 6])
     with col1:
+        # Usando a URL da logo que você já havia adicionado
         st.image("https://i.imgur.com/3z2e20a.png", width=120)
     with col2:
         st.title('Portal de Envio de Documentos')
@@ -128,7 +136,6 @@ else:
         st.error("Link inválido ou nenhum documento foi solicitado.")
     else:
         arquivos_anexados = {}
-        # Ajusta o número de colunas com base na quantidade de documentos
         num_colunas = 3 if len(documentos_necessarios) > 5 else 2
         cols = st.columns(num_colunas)
 
