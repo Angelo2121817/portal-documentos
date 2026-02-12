@@ -1,9 +1,10 @@
+# --- INÍCIO DO BLOCO 1: IMPORTAÇÕES ---
 import streamlit as st
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
-
+# --- FIM DO BLOCO 1: IMPORTAÇÕES ---
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(
     page_title="Portal de Upload de Documentos",
