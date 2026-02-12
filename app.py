@@ -136,6 +136,14 @@ if not nome_cliente:
         else:
             st.warning("Por favor, preencha o campo 'Nome do Cliente ou Empresa' antes de enviar os arquivos.")
 
+# --- INÍCIO DO NOVO BLOCO DO RODAPÉ ---
 st.markdown("---")
-st.write("Desenvolvido para agilizar o seu processo.")
-# --- FIM DO BLOCO 4: INTERFACE DA APLICAÇÃO ---
+st.success("✅ Tudo pronto! Após anexar os arquivos nos campos acima, o envio para o nosso sistema é automático.")
+
+# Rodapé profissional centralizado
+st.markdown("""
+    <div style="text-align: center; margin-top: 20px; font-size: 12px; color: grey;">
+        <p>Desenvolvido por Angelo | Contato: seu-email-aqui@exemplo.com</p>
+    </div>
+""", unsafe_allow_html=True)
+# --- FIM DO NOVO BLOCO DO RODAPÉ ---
