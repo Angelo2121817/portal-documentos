@@ -12,139 +12,141 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- CSS PREMIUM (VISUAL PROFISSIONAL) ---
+# --- CSS MINIMALISTA & PROFISSIONAL (TEMA CINZA/CLEAN) ---
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
     /* Reset e Fonte Global */
-    * { font-family: 'Inter', sans-serif; }
+    * { font-family: 'Inter', sans-serif; color: #334155; }
 
-    /* Fundo Fluido (Deep Ocean Gradient) */
+    /* Fundo da Página: Cinza Claro Suave (Papel) */
     [data-testid="stAppViewContainer"] {
-        background: linear-gradient(120deg, #0f172a 0%, #1e3a8a 40%, #0ea5e9 100%) !important;
-        background-attachment: fixed !important;
+        background-color: #f8fafc !important; /* Cinza muito claro */
+        background-image: none !important;
     }
 
-    /* Container Principal (Vidro Fosco Profissional) */
+    /* Container Principal: Branco Puro com Sombra Suave */
     .main .block-container {
-        background-color: rgba(255, 255, 255, 0.96) !important; /* Branco quase sólido para leitura */
-        border-radius: 16px !important;
+        background-color: #ffffff !important;
+        border-radius: 12px !important;
         padding: 3rem !important;
         margin-top: 2rem !important;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.3) !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important; /* Sombra muito leve */
         max-width: 1200px !important;
+        border: 1px solid #e2e8f0;
     }
 
     /* Títulos */
     h1, h2, h3 {
-        color: #0f172a !important; /* Azul Escuro Profundo */
+        color: #1e293b !important; /* Cinza Chumbo Escuro */
         font-weight: 700 !important;
-        letter-spacing: -0.5px;
     }
     
-    p, li, label {
-        color: #334155 !important; /* Cinza Chumbo para leitura confortável */
-        font-size: 1rem;
-    }
-
-    /* Header Personalizado com Logo */
+    /* Header Unificado */
     .header-container {
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 20px;
         margin-bottom: 40px;
         padding-bottom: 20px;
-        border-bottom: 2px solid #e2e8f0;
-        flex-wrap: wrap;
+        border-bottom: 1px solid #e2e8f0;
     }
     
     .header-logo {
-        height: 80px;
+        height: 90px;
         width: auto;
-        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        margin-bottom: 15px;
     }
     
     .header-title {
-        font-size: 2.2rem;
-        color: #1e3a8a;
-        font-weight: 800;
+        font-size: 1.8rem;
+        color: #334155;
+        font-weight: 600;
         text-transform: uppercase;
+        letter-spacing: 1px;
         margin: 0;
     }
 
-    /* Cards de Documentos */
+    /* Cards de Documentos - Estilo "Clean" */
     .doc-card {
-        background: #f8fafc;
+        background-color: #ffffff;
         border: 1px solid #e2e8f0;
-        border-left: 5px solid #0ea5e9; /* Detalhe Ciano */
-        border-radius: 10px;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        transition: all 0.3s ease;
+        border-left: 4px solid #64748b; /* Detalhe Cinza Metálico */
+        border-radius: 8px;
+        padding: 1.2rem;
+        margin-bottom: 1rem;
+        transition: all 0.2s ease;
     }
     
     .doc-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(14, 165, 233, 0.15);
-        border-left-color: #3b82f6;
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transform: translateY(-2px);
     }
 
     .doc-title {
         font-weight: 600;
-        color: #1e40af;
-        font-size: 1.1rem;
-        margin-bottom: 0.5rem;
+        color: #1e293b;
+        font-size: 1rem;
         display: block;
     }
 
-    /* Botões Estilizados */
+    /* Botões - Sóbrios (Cinza Chumbo) */
     .stButton > button {
-        background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%) !important;
+        background-color: #334155 !important; /* Cinza Escuro */
         color: white !important;
         border: none !important;
         padding: 0.8rem 2rem !important;
         font-size: 1rem !important;
-        font-weight: 600 !important;
-        border-radius: 8px !important;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
-        transition: all 0.3s ease !important;
+        font-weight: 500 !important;
+        border-radius: 6px !important;
+        transition: all 0.2s ease !important;
         width: 100%;
     }
     
     .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.5) !important;
-        filter: brightness(1.1);
+        background-color: #1e293b !important; /* Mais escuro no hover */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+        transform: translateY(-1px);
     }
 
-    /* Inputs e Selects */
+    /* Inputs */
     .stTextInput > div > div > input, .stMultiSelect > div > div > div {
-        background-color: #f1f5f9;
-        border-radius: 8px;
+        background-color: #f8fafc;
         border: 1px solid #cbd5e1;
-        color: #0f172a;
+        color: #334155;
+        border-radius: 6px;
     }
 
-    /* Rodapé */
+    /* Rodapé Limpo */
     .footer-container {
-        margin-top: 4rem;
-        padding-top: 2rem;
+        margin-top: 50px;
+        padding-top: 30px;
         border-top: 1px solid #e2e8f0;
         text-align: center;
+        background-color: transparent;
     }
     
-    .footer-link {
-        color: #0ea5e9;
+    .footer-text {
+        color: #64748b;
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+    
+    .footer-links a {
+        color: #475569;
         text-decoration: none;
         font-weight: 600;
-        margin: 0 10px;
+        margin: 0 15px;
+        font-size: 0.95rem;
         transition: color 0.2s;
     }
     
-    .footer-link:hover {
-        color: #1e3a8a;
+    .footer-links a:hover {
+        color: #0f172a;
+        text-decoration: underline;
     }
 
 </style>
@@ -184,7 +186,7 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
 params = st.query_params
 LOGO_URL = "https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png"
 
-# --- HEADER UNIFICADO (Aparece em ambas as telas) ---
+# --- HEADER UNIFICADO (Limpo e Centralizado) ---
 st.markdown(f"""
     <div class="header-container">
         <img src="{LOGO_URL}" class="header-logo">
@@ -195,8 +197,8 @@ st.markdown(f"""
 
 # MODO 1: ADMIN
 if not params:
-    st.markdown("### ⚙️ Painel de Controle - Gerador de Links")
-    st.info("Configure abaixo o link exclusivo para seu cliente enviar os documentos.")
+    st.markdown("### ⚙️ Configuração de Link")
+    st.info("Painel administrativo para geração de links de upload.")
 
     MASTER_LISTA_DOCUMENTOS = [
         'Matrícula do terreno ou IPTU mais recente',
@@ -233,7 +235,7 @@ if not params:
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    if st.button("🔗 GERAR LINK SEGURO"):
+    if st.button("🔗 GERAR LINK"):
         if not nome_cliente_config:
             st.error("⚠️ Por favor, digite o nome do cliente.")
         elif not documentos_selecionados:
@@ -255,47 +257,46 @@ else:
     docs_string = urllib.parse.unquote(params.get("docs", ""))
     documentos_necessarios = docs_string.split(',') if docs_string else []
 
-    st.markdown(f"<h2 style='text-align: center; color: #334155;'>Portal de Envio de Documentos</h2>", unsafe_allow_html=True)
-    st.markdown(f"<h3 style='text-align: center; color: #0ea5e9; margin-bottom: 30px;'>Cliente: {nome_cliente}</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='text-align: center; color: #64748b; font-weight: 400;'>Portal de Envio de Documentos</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='text-align: center; color: #1e293b; margin-top: -10px;'>{nome_cliente}</h2>", unsafe_allow_html=True)
+    st.markdown("---")
     
-    st.info("ℹ️ **Instruções:** Anexe os arquivos solicitados abaixo. O envio final é feito ao clicar no botão 'ENVIAR' no final da página.")
-
     if not documentos_necessarios:
         st.error("Link inválido ou expirado.")
     else:
         arquivos_anexados = {}
-        # Layout responsivo inteligente
+        # Layout responsivo
         num_colunas = 3 if len(documentos_necessarios) > 4 else 2
         cols = st.columns(num_colunas)
 
         for i, documento in enumerate(documentos_necessarios):
             with cols[i % num_colunas]:
-                # Card HTML personalizado
+                # Card HTML Clean
                 st.markdown(f"""
                 <div class="doc-card">
-                    <span class="doc-title">📄 {documento}</span>
+                    <span class="doc-title">{documento}</span>
                 </div>
                 """, unsafe_allow_html=True)
                 
                 uploaded_file = st.file_uploader(
-                    f"Selecione o arquivo para {documento}", # Label simplificada
+                    f"Selecione o arquivo para {documento}", 
                     type=['pdf', 'jpg', 'png', 'docx', 'jpeg'],
                     key=documento,
-                    label_visibility="collapsed" # Esconde label padrão para usar o card
+                    label_visibility="collapsed"
                 )
                 if uploaded_file is not None:
                     arquivos_anexados[documento] = uploaded_file
-                    st.success("Arquivo anexado!")
+                    st.markdown("<span style='color: #10b981; font-size: 0.8rem; font-weight: 600;'>✓ Arquivo anexado</span>", unsafe_allow_html=True)
 
-        st.markdown("---")
+        st.markdown("<br><br>", unsafe_allow_html=True)
 
         col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
         with col_btn2:
-            if st.button('🚀 ENVIAR TODOS OS DOCUMENTOS'):
+            if st.button('ENVIAR DOCUMENTOS'):
                 if not arquivos_anexados:
                     st.warning("⚠️ Nenhum documento foi anexado ainda.")
                 else:
-                    with st.spinner("Enviando seus documentos com segurança..."):
+                    with st.spinner("Enviando..."):
                         erros = []
                         sucessos = 0
                         for doc, arquivo in arquivos_anexados.items():
@@ -308,24 +309,19 @@ else:
                         
                         if not erros:
                             st.balloons()
-                            st.success(f"🎉 Sucesso Absoluto! {sucessos} documento(s) foram enviados para nossa equipe.")
+                            st.success(f"Sucesso! {sucessos} documento(s) foram enviados.")
                         else:
-                            st.error(f"Ocorreu um erro ao enviar: {', '.join(erros)}. Tente novamente.")
+                            st.error(f"Erro ao enviar: {', '.join(erros)}.")
 
-# --- RODAPÉ PROFISSIONAL ATUALIZADO ---
+# --- RODAPÉ CLEAN E SUAVE ---
 st.markdown("""
 <div class="footer-container">
-    <p style="font-weight: 600; color: #1e3a8a; margin-bottom: 10px;">METAL QUÍMICA CONSULTORIA</p>
-    <p style="font-size: 0.9rem; color: #64748b;">Excelência em Gestão Ambiental e Regularizações</p>
-    
-    <div style="margin-top: 20px;">
-        <a href="https://wa.me/5517991434883" target="_blank" class="footer-link">📱 (17) 99143-4883</a>
-        <span style="color: #cbd5e1;">|</span>
-        <a href="mailto:metalquimicaconsultoria@gmail.com" class="footer-link">📧 metalquimicaconsultoria@gmail.com</a>
+    <div class="footer-links">
+        <a href="https://wa.me/5517991434883" target="_blank">📱 (17) 99143-4883</a>
+        <a href="mailto:metalquimicaconsultoria@gmail.com">📧 metalquimicaconsultoria@gmail.com</a>
     </div>
-    
-    <p style="margin-top: 30px; font-size: 0.8rem; color: #94a3b8;">
-        © 2026 Metal Química. Todos os direitos reservados.
-    </p>
+    <br>
+    <p class="footer-text">Metal Química Consultoria • Soluções Ambientais</p>
+    <p class="footer-text" style="font-size: 0.8rem; color: #94a3b8;">© 2026 Todos os direitos reservados.</p>
 </div>
 """, unsafe_allow_html=True)
