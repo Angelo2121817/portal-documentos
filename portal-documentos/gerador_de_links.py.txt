@@ -1,0 +1,45 @@
+import streamlit as st
+from urllib.parse import quote
+
+st.set_page_config(page_title="Gerador de Links", layout="centered")
+
+st.title("🔗 Gerador de Links de Upload")
+st.write("Selecione os documentos pendentes para o cliente. O link gerado mostrará apenas os campos selecionados.")
+
+# --- CONFIGURE AQUI ---
+# Coloque a URL principal da sua aplicação publicada no Streamlit Cloud
+URL_BASE_DA_APP = "https://app-documentos-7l5ecrvyv7lhjl3ska9e3t.streamlit.app/" 
+
+# Lista MESTRA com TODOS os documentos que você pode vir a pedir
+LISTA_MESTRA_DOCUMENTOS = [
+    'Contrato Social',
+    'Cartão CNPJ',
+    'Procuração',
+    'Memorial Descritivo',
+    'ART do Responsável Técnico',
+    'Licença de Operação Anterior',
+    'Comprovante de Endereço',
+    'Outorga de Uso de Água'
+    # Adicione outros documentos que você possa precisar no futuro
+]
+# --------------------
+
+if URL_BASE_DA_APP == "https://seu-app-aqui.streamlit.app":
+    st.error("⚠️ IMPORTANTE: Edite este arquivo (`gerador_de_links.py`) e substitua o valor da variável `URL_BASE_DA_APP` pela URL real da sua aplicação.")
+else:
+    documentos_selecionados = st.multiselect(
+        "Selecione os documentos pendentes:",
+        options=LISTA_MESTRA_DOCUMENTOS
+    )
+
+    if st.button("Gerar Link Personalizado"):
+        if not documentos_selecionados:
+            st.warning("Por favor, selecione pelo menos um documento.")
+        else:
+            # Transforma a lista em uma string separada por vírgulas, com espaços substituídos por '_'
+            docs_param = ",".join([doc.replace(" ", "_") for doc in documentos_selecionados])
+            
+            link_final = f"{URL_BASE_DA_APP}?docs={docs_param}"
+            
+            st.success("Link gerado com sucesso! Copie e envie para o seu cliente:")
+            st.code(link_final)
