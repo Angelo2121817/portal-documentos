@@ -1,4 +1,4 @@
-# --- INÍCIO DO CÓDIGO COMPLETO - app.py (VERSÃO COM DESTAQUE NO DOCUMENTO) ---
+# --- INÍCIO DO CÓDIGO COMPLETO - app.py (VERSÃO FINAL OTIMIZADA) ---
 
 import streamlit as st
 import smtplib
@@ -15,7 +15,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- Bloco 1.5: Estilo CSS Moderno e Profissional com Destaque em Documentos ---
+# --- Bloco 1.5: Estilo CSS Moderno e Profissional ---
 st.markdown("""
 <style>
     /* Importar fonte moderna */
@@ -200,40 +200,52 @@ st.markdown("""
         font-family: 'Courier New', monospace !important;
     }
 
-    /* ===== NOVO: DESTAQUE EM DOCUMENTOS ===== */
+    /* ===== DESTAQUE EM DOCUMENTOS (REDUZIDO) ===== */
     .document-card-highlight {
-        background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%) !important;
-        border-radius: 12px !important;
-        padding: 1.5rem !important;
-        margin: 1rem 0 !important;
-        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3) !important;
-        border: 2px solid rgba(255, 255, 255, 0.2) !important;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%) !important;
+        border-radius: 8px !important;
+        padding: 1rem !important;
+        margin: 0.75rem 0 !important;
+        border: 2px solid #3b82f6 !important;
         transition: all 0.3s ease !important;
     }
 
     .document-card-highlight:hover {
-        transform: translateY(-5px) !important;
-        box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 12px rgba(59, 130, 246, 0.2) !important;
     }
 
-    .document-icon-large {
-        font-size: 3rem !important;
-        margin-bottom: 0.75rem !important;
-        display: block !important;
+    .document-icon-medium {
+        font-size: 1.5rem !important;
+        margin-right: 0.5rem !important;
+        display: inline-block !important;
     }
 
-    .document-name-large {
-        font-size: 1.75rem !important;
-        font-weight: 700 !important;
+    .document-name-medium {
+        font-size: 1.125rem !important;
+        font-weight: 600 !important;
+        color: #1e293b !important;
+        display: inline-block !important;
+    }
+
+    /* Botão copiar */
+    .copy-button {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
         color: #ffffff !important;
-        margin: 0.5rem 0 !important;
-        letter-spacing: -0.5px !important;
+        border: none !important;
+        border-radius: 6px !important;
+        padding: 0.5rem 1rem !important;
+        font-weight: 600 !important;
+        font-size: 0.875rem !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2) !important;
     }
 
-    .document-status {
-        font-size: 0.875rem !important;
-        color: rgba(255, 255, 255, 0.9) !important;
-        margin-top: 0.5rem !important;
+    .copy-button:hover {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+        box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3) !important;
+        transform: translateY(-1px) !important;
     }
 
     /* Animação de entrada */
@@ -266,12 +278,12 @@ st.markdown("""
             width: 100% !important;
         }
 
-        .document-name-large {
-            font-size: 1.25rem !important;
+        .document-name-medium {
+            font-size: 1rem !important;
         }
 
-        .document-icon-large {
-            font-size: 2rem !important;
+        .document-icon-medium {
+            font-size: 1.25rem !important;
         }
     }
 </style>
@@ -306,9 +318,9 @@ params = st.query_params
 
 if not params:
     # MODO ADMIN
-    col_logo, col_title = st.columns([1, 5])
+    col_logo, col_title = st.columns([1.2, 4.8])
     with col_logo:
-        st.image("https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png", width=150)
+        st.image("https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png", width=200)
     with col_title:
         st.title("⚗️ Portal de Documentos")
         st.markdown("**Metal Química Consultoria** - Gerenciamento de Documentação")
@@ -365,10 +377,13 @@ if not params:
                 url_gerada = f"https://{URL_BASE_DA_SUA_APP}?cliente={cliente_param}&docs={docs_param}"
                 
                 st.success("✅ Link gerado com sucesso!")
-                st.markdown("""
+                st.markdown(f"""
                 <div style="background-color: #f1f5f9; padding: 1rem; border-radius: 8px; border: 2px solid #3b82f6; margin: 1rem 0;">
-                    <p style="margin: 0; color: #64748b; font-size: 0.875rem;">Copie o link abaixo e envie para o cliente:</p>
-                    <code style="display: block; padding: 0.75rem; margin-top: 0.5rem; background-color: #ffffff; border-radius: 4px; word-break: break-all; color: #1e293b;">""" + url_gerada + """</code>
+                    <p style="margin: 0 0 0.75rem 0; color: #64748b; font-size: 0.875rem;">Copie o link abaixo e envie para o cliente:</p>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <code style="flex: 1; display: block; padding: 0.75rem; background-color: #ffffff; border-radius: 4px; word-break: break-all; color: #1e293b; border: 1px solid #e2e8f0;">{url_gerada}</code>
+                        <button class="copy-button" onclick="navigator.clipboard.writeText('{url_gerada}'); alert('Link copiado para a área de transferência!');">📋 Copiar</button>
+                    </div>
                 </div>
                 """, unsafe_allow_html=True)
     
@@ -386,9 +401,9 @@ else:
     documentos_necessarios = docs_string.split(',') if docs_string else []
     
     # Header
-    col_logo, col_title = st.columns([1, 5])
+    col_logo, col_title = st.columns([1.2, 4.8])
     with col_logo:
-        st.image("https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png", width=150)
+        st.image("https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png", width=200)
     with col_title:
         st.title("⚗️ Portal de Envio de Documentos")
         st.markdown(f"**Cliente:** {nome_cliente}")
@@ -422,12 +437,11 @@ else:
         
         for i, documento in enumerate(documentos_necessarios):
             with cols[i % num_colunas]:
-                # NOVO: Card destacado com nome do documento em grande
+                # Card destacado (reduzido)
                 st.markdown(f"""
                 <div class="document-card-highlight">
-                    <span class="document-icon-large">📄</span>
-                    <div class="document-name-large">{documento}</div>
-                    <div class="document-status">Clique abaixo para selecionar o arquivo</div>
+                    <span class="document-icon-medium">📄</span>
+                    <span class="document-name-medium">{documento}</span>
                 </div>
                 """, unsafe_allow_html=True)
                 
