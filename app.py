@@ -82,6 +82,9 @@ st.markdown("""
 
 # --- INÍCIO DO SUB-BLOCO DO LOOP (PARA SUBSTITUIR) ---
 # --- INÍCIO DO NOVO SUB-BLOCO COM COLUNAS ---
+# --- INÍCIO DO NOVO BLOCO DE UPLOAD COM BOTÃO DE ENVIO ---
+st.markdown("### Documentos Necessários")
+
 documentos_necessarios = [
     'Contrato Social',
     'Cartão CNPJ',
@@ -90,39 +93,59 @@ documentos_necessarios = [
     'ART do Responsável Técnico'
 ]
 
-st.markdown("### Documentos Necessários")
+# Dicionário para guardar os arquivos anexados temporariamente
+arquivos_anexados = {}
 
 # Define o número de colunas que queremos na grade
-num_colunas = 2 
+num_colunas = 2
 cols = st.columns(num_colunas)
 
-# Loop para cada documento, usando enumerate para ter um índice (i)
+# Loop para criar os campos de upload e guardar os arquivos
 for i, documento in enumerate(documentos_necessarios):
-    # Seleciona a coluna correta para o item atual (0, 1, 0, 1, 0...)
     with cols[i % num_colunas]:
         st.subheader(f'{documento}')
-
+        
         uploaded_file = st.file_uploader(
-            f'Selecione o arquivo', # Texto mais curto para caber melhor
+            f'Selecione o arquivo para {documento}',
             type=['pdf', 'jpg', 'png', 'docx', 'jpeg'],
             key=documento
         )
-
+        
         if uploaded_file is not None:
-            if nome_cliente: # Verifica se o nome do cliente foi preenchido
-                with st.spinner(f'Enviando...'):
-                    file_content = uploaded_file.getvalue()
-                    sucesso = enviar_email_com_anexo(f"{documento} ({nome_cliente})", file_content, uploaded_file.name)
+            # Apenas guarda o arquivo, não envia
+            arquivos_anexados[documento] = uploaded_file
 
-                    if sucesso:
-                        st.success(f'Enviado!')
+st.markdown("---")
+
+# Botão para disparar o envio de todos os arquivos de uma vez
+if st.button('🚀 ENVIAR TODOS OS DOCUMENTOS'):
+    # 1. Verifica se o nome do cliente foi preenchido
+    if not nome_cliente:
+        st.error("ERRO: Por favor, preencha o campo 'Nome do Cliente ou Empresa' antes de enviar.")
+    # 2. Verifica se pelo menos um arquivo foi anexado
+    elif not arquivos_anexados:
+        st.warning("Aviso: Nenhum documento foi anexado. Por favor, selecione pelo menos um arquivo.")
+    # 3. Se tudo estiver certo, envia os e-mails
+    else:
+        with st.spinner("Enviando documentos... Por favor, aguarde."):
+            erros = []
+            sucessos = 0
+            # Loop para enviar cada arquivo guardado
+            for documento, arquivo in arquivos_anexados.items():
+                file_content = arquivo.getvalue()
+                sucesso = enviar_email_com_anexo(f"{documento} ({nome_cliente})", file_content, arquivo.name)
+                if sucesso:
+                    sucessos += 1
+                else:
+                    erros.append(documento)
+            
+            # Mensagem final
+            if not erros:
+                st.success(f"🎉 Sucesso! {sucessos} documento(s) foram enviados para o nosso sistema.")
             else:
-                # Mostra o aviso dentro da coluna específica
-                st.warning("Preencha o nome do cliente acima.")
+                st.error(f"Falha no envio para os seguintes documentos: {', '.join(erros)}. Por favor, tente novamente.")
 
-# Uma mensagem de aviso geral se o nome do cliente não estiver preenchido
-if not nome_cliente:
-    st.info("👆 Por favor, preencha o campo 'Nome do Cliente ou Empresa' antes de fazer o upload.")
+# --- FIM DO NOVO BLOCO DE UPLOAD COM BOTÃO DE ENVIO ---
 # --- FIM DO NOVO SUB-BLOCO COM COLUNAS ---
     
     if uploaded_file is not None:
