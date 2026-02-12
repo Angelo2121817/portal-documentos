@@ -56,6 +56,7 @@ st.write("Por favor, envie os documentos necessários para o licenciamento ambie
 # Adiciona um campo para o nome do cliente/empresa
 nome_cliente = st.text_input("Nome do Cliente ou Empresa*", help="Este nome será usado para organizar os documentos.")
 
+# --- INÍCIO DO SUB-BLOCO DO LOOP (PARA SUBSTITUIR) ---
 documentos_necessarios = [
     'Contrato Social',
     'Cartão CNPJ',
@@ -73,6 +74,21 @@ for documento in documentos_necessarios:
         type=['pdf', 'jpg', 'png', 'docx', 'jpeg'], 
         key=documento
     )
+    
+    if uploaded_file is not None:
+        if nome_cliente: # Verifica se o nome do cliente foi preenchido
+            with st.spinner(f'Enviando {documento}...'):
+                # Lê o conteúdo do arquivo
+                file_content = uploaded_file.getvalue()
+                
+                # Envia o e-mail
+                sucesso = enviar_email_com_anexo(f"{documento} ({nome_cliente})", file_content, uploaded_file.name)
+                
+                if sucesso:
+                    st.success(f'O documento "{documento}" foi enviado com sucesso para seu e-mail!')
+        else:
+            st.warning("Por favor, preencha o campo 'Nome do Cliente ou Empresa' antes de enviar os arquivos.")
+# --- FIM DO SUB-BLOCO DO LOOP (PARA SUBSTITUIR) ---
     
     if uploaded_file is not None:
         if nome_cliente: # Verifica se o nome do cliente foi preenchido
