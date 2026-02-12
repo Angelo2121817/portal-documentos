@@ -83,24 +83,34 @@ st.markdown("""
 # --- INÍCIO DO SUB-BLOCO DO LOOP (PARA SUBSTITUIR) ---
 # --- INÍCIO DO NOVO SUB-BLOCO COM COLUNAS ---
 # --- INÍCIO DO NOVO BLOCO DE UPLOAD COM BOTÃO DE ENVIO ---
-st.markdown("### Documentos Necessários")
+# --- INÍCIO DO NOVO BLOCO DE UPLOAD DINÂMICO ---
 
-documentos_necessarios = [
-    'Contrato Social',
-    'Cartão CNPJ',
-    'Procuração',
-    'Memorial Descritivo',
-    'ART do Responsável Técnico'
-]
+# Pega o parâmetro 'docs' da URL
+params = st.query_params
+docs_da_url = params.get("docs", "")
+
+# Se o parâmetro existir, transforma a string em uma lista de documentos
+if docs_da_url:
+    # Substitui '_' por espaços e separa por vírgula
+    documentos_necessarios = [doc.replace("_", " ") for doc in docs_da_url.split(",")]
+else:
+    documentos_necessarios = []
+
+# Se a lista de documentos estiver vazia (link inválido ou sem docs)
+if not documentos_necessarios:
+    st.error("Este link é inválido ou não especifica documentos. Por favor, solicite um novo link de upload.")
+    st.stop() # Interrompe a execução do restante da página
+
+st.markdown("### Documentos Pendentes")
 
 # Dicionário para guardar os arquivos anexados temporariamente
 arquivos_anexados = {}
 
-# Define o número de colunas que queremos na grade
+# Define o número de colunas
 num_colunas = 2
 cols = st.columns(num_colunas)
 
-# Loop para criar os campos de upload e guardar os arquivos
+# Loop para criar os campos de upload dinamicamente
 for i, documento in enumerate(documentos_necessarios):
     with cols[i % num_colunas]:
         st.subheader(f'{documento}')
@@ -112,10 +122,33 @@ for i, documento in enumerate(documentos_necessarios):
         )
         
         if uploaded_file is not None:
-            # Apenas guarda o arquivo, não envia
             arquivos_anexados[documento] = uploaded_file
 
 st.markdown("---")
+
+# Botão para disparar o envio de todos os arquivos de uma vez
+if st.button('🚀 ENVIAR DOCUMENTOS PENDENTES'):
+    if not nome_cliente:
+        st.error("ERRO: Por favor, preencha o campo 'Nome do Cliente ou Empresa' antes de enviar.")
+    elif not arquivos_anexados:
+        st.warning("Aviso: Nenhum documento foi anexado.")
+    else:
+        with st.spinner("Enviando documentos..."):
+            erros = []
+            sucessos = 0
+            for documento, arquivo in arquivos_anexados.items():
+                file_content = arquivo.getvalue()
+                sucesso = enviar_email_com_anexo(f"{documento} ({nome_cliente})", file_content, arquivo.name)
+                if sucesso:
+                    sucessos += 1
+                else:
+                    erros.append(documento)
+            
+            if not erros:
+                st.success(f"🎉 Sucesso! {sucessos} documento(s) foram enviados.")
+            else:
+                st.error(f"Falha no envio para: {', '.join(erros)}.")
+# --- FIM DO NOVO BLOCO DE UPLOAD DINÂMICO ---
 
 # Botão para disparar o envio de todos os arquivos de uma vez
 if st.button('🚀 ENVIAR TODOS OS DOCUMENTOS'):
