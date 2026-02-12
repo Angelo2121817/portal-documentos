@@ -57,6 +57,7 @@ st.write("Por favor, envie os documentos necessários para o licenciamento ambie
 nome_cliente = st.text_input("Nome do Cliente ou Empresa*", help="Este nome será usado para organizar os documentos.")
 
 # --- INÍCIO DO SUB-BLOCO DO LOOP (PARA SUBSTITUIR) ---
+# --- INÍCIO DO NOVO SUB-BLOCO COM COLUNAS ---
 documentos_necessarios = [
     'Contrato Social',
     'Cartão CNPJ',
@@ -65,15 +66,40 @@ documentos_necessarios = [
     'ART do Responsável Técnico'
 ]
 
-# Loop para cada documento
-for documento in documentos_necessarios:
-    st.subheader(f'Upload para: {documento}')
-    
-    uploaded_file = st.file_uploader(
-        f'Selecione o arquivo para {documento}', 
-        type=['pdf', 'jpg', 'png', 'docx', 'jpeg'], 
-        key=documento
-    )
+st.markdown("### Documentos Necessários")
+
+# Define o número de colunas que queremos na grade
+num_colunas = 2 
+cols = st.columns(num_colunas)
+
+# Loop para cada documento, usando enumerate para ter um índice (i)
+for i, documento in enumerate(documentos_necessarios):
+    # Seleciona a coluna correta para o item atual (0, 1, 0, 1, 0...)
+    with cols[i % num_colunas]:
+        st.subheader(f'{documento}')
+
+        uploaded_file = st.file_uploader(
+            f'Selecione o arquivo', # Texto mais curto para caber melhor
+            type=['pdf', 'jpg', 'png', 'docx', 'jpeg'],
+            key=documento
+        )
+
+        if uploaded_file is not None:
+            if nome_cliente: # Verifica se o nome do cliente foi preenchido
+                with st.spinner(f'Enviando...'):
+                    file_content = uploaded_file.getvalue()
+                    sucesso = enviar_email_com_anexo(f"{documento} ({nome_cliente})", file_content, uploaded_file.name)
+
+                    if sucesso:
+                        st.success(f'Enviado!')
+            else:
+                # Mostra o aviso dentro da coluna específica
+                st.warning("Preencha o nome do cliente acima.")
+
+# Uma mensagem de aviso geral se o nome do cliente não estiver preenchido
+if not nome_cliente:
+    st.info("👆 Por favor, preencha o campo 'Nome do Cliente ou Empresa' antes de fazer o upload.")
+# --- FIM DO NOVO SUB-BLOCO COM COLUNAS ---
     
     if uploaded_file is not None:
         if nome_cliente: # Verifica se o nome do cliente foi preenchido
