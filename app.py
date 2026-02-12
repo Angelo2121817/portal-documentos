@@ -1,22 +1,21 @@
-# --- INÍCIO DO BLOCO 1: IMPORTAÇÕES ---
+# --- INÍCIO DO CÓDIGO COMPLETO - app.py ---
+
 import streamlit as st
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
-# --- FIM DO BLOCO 1: IMPORTAÇÕES ---
-# --- CONFIGURAÇÃO DA PÁGINA ---
-# --- INÍCIO DO BLOCO 2: CONFIGURAÇÃO DA PÁGINA ---
+import urllib.parse
+
+# --- Bloco 1: Configuração da Página ---
 st.set_page_config(
-    page_title="Portal de Upload de Documentos",
+    page_title="Portal de Documentos",
     page_icon="📄"
 )
-# --- FIM DO BLOCO 2: CONFIGURAÇÃO DA PÁGINA ---
 
-# --- FUNÇÃO DE ENVIO DE E-MAIL ---
-# --- INÍCIO DO BLOCO 3: FUNÇÃO DE ENVIO DE E-MAIL ---
-# --- INÍCIO DO NOVO BLOCO 3 ---
-def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original, observacoes=""):
+# --- Bloco 2: Função de Envio de E-mail (O "Motor") ---
+# Esta função não muda. Ela é o nosso sistema de envio.
+def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
     try:
         sender_email = st.secrets["SENDER_EMAIL"]
         sender_password = st.secrets["SENDER_PASSWORD"]
@@ -27,16 +26,7 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
         msg['To'] = recipient_email
         msg['Subject'] = f"Novo Documento Recebido: {nome_documento}"
 
-        # Corpo do e-mail dinâmico
-        corpo = f"Olá Angelo,\n\nUm novo documento foi enviado através do portal.\n\n"
-        corpo += f"Tipo de Documento: {nome_documento}\n"
-        corpo += f"Nome Original do Arquivo: {nome_arquivo_original}\n\n"
-        
-        # Adiciona as observações apenas se elas existirem
-        if observacoes:
-            corpo += f"--- Observações do Cliente ---\n{observacoes}\n--------------------------------\n\n"
-            
-        corpo += "O arquivo está em anexo."
+        corpo = f"Olá Angelo,\n\nUm novo documento foi enviado através do portal.\n\nTipo de Documento: {nome_documento}\nNome Original do Arquivo: {nome_arquivo_original}\n\nO arquivo está em anexo."
         msg.attach(MIMEText(corpo, 'plain'))
 
         anexo = MIMEApplication(conteudo_arquivo, Name=nome_arquivo_original)
@@ -50,174 +40,119 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
         
         return True
     except Exception as e:
-        st.error(f"Ocorreu um erro ao enviar o e-mail: {e}")
+        # Mostra um erro detalhado para você (Angelo), mas não para o cliente.
+        print(f"Erro no envio de e-mail: {e}")
         return False
-# --- FIM DO NOVO BLOCO 3 ---
-# --- FIM DO BLOCO 3: FUNÇÃO DE ENVIO DE E-MAIL ---
-# --- INTERFACE DA APLICAÇÃO ---
-# --- INÍCIO DO BLOCO 4: INTERFACE DA APLICAÇÃO ---
-st.title('📄 Portal de Upload de Documentos')
-st.write("Por favor, envie os documentos necessários para o licenciamento ambiental.")
 
-# Adiciona um campo para o nome do cliente/empresa
-# --- INÍCIO DO NOVO BLOCO DE INSTRUÇÕES ---
-st.info("PASSO 1: Preencha o nome do cliente/empresa para identificação.")
-nome_cliente = st.text_input(
-    "Nome do Cliente ou Empresa*", 
-    help="Este nome será usado para identificar os documentos no e-mail."
-)
+# --- Bloco 3: Lógica Principal da Aplicação ---
 
-# --- INÍCIO DO NOVO BLOCO DO RODAPÉ ---
-st.markdown("---")
-st.success("✅ Tudo pronto! Após anexar os arquivos, o envio para o nosso sistema é automático.")
-
-# Rodapé profissional centralizado
-st.markdown("""
-    <div style="text-align: center; margin-top: 20px; font-size: 12px; color: grey;">
-        <p>Desenvolvido por Angelo | Contato: seu-email-aqui@exemplo.com</p>
-    </div>
-""", unsafe_allow_html=True)
-# --- FIM DO NOVO BLOCO DO RODAPÉ ---
-# --- FIM DO NOVO BLOCO DE INSTRUÇÕES ---
-
-# --- INÍCIO DO SUB-BLOCO DO LOOP (PARA SUBSTITUIR) ---
-# --- INÍCIO DO NOVO SUB-BLOCO COM COLUNAS ---
-# --- INÍCIO DO NOVO BLOCO DE UPLOAD COM BOTÃO DE ENVIO ---
-# --- INÍCIO DO NOVO BLOCO DE UPLOAD DINÂMICO ---
-
-# Pega o parâmetro 'docs' da URL
+# Pega os parâmetros da URL (a parte depois do "?")
 params = st.query_params
-docs_da_url = params.get("docs", "")
 
-# Se o parâmetro existir, transforma a string em uma lista de documentos
-if docs_da_url:
-    # Substitui '_' por espaços e separa por vírgula
-    documentos_necessarios = [doc.replace("_", " ") for doc in docs_da_url.split(",")]
+# MODO 1: MODO DE CONFIGURAÇÃO (Se não houver parâmetros na URL)
+# Esta é a tela que SÓ VOCÊ (Angelo) vai usar para criar o link para o cliente.
+if not params:
+    st.header("⚙️ Modo de Configuração")
+    st.info("Esta é a sua área de administrador. Use-a para criar um link personalizado para cada cliente.")
+
+    # Lista MESTRA de todos os documentos possíveis. Você pode adicionar mais aqui.
+    MASTER_LISTA_DOCUMENTOS = [
+        'Contrato Social', 'Cartão CNPJ', 'Procuração', 'Memorial Descritivo', 
+        'ART do Responsável Técnico', 'RG e CPF dos Sócios', 'Comprovante de Endereço',
+        'Licença de Operação Anterior', 'Outros'
+    ]
+    
+    st.markdown("#### PASSO 1: Digite o nome do cliente")
+    nome_cliente_config = st.text_input("Nome do Cliente ou Empresa")
+
+    st.markdown("#### PASSO 2: Selecione os documentos pendentes")
+    documentos_selecionados = st.multiselect(
+        "Selecione os documentos que você precisa que este cliente envie:",
+        options=MASTER_LISTA_DOCUMENTOS
+    )
+
+    if st.button("🔗 GERAR LINK PARA O CLIENTE"):
+        if not nome_cliente_config:
+            st.error("Por favor, digite o nome do cliente.")
+        elif not documentos_selecionados:
+            st.error("Por favor, selecione pelo menos um documento.")
+        else:
+            # Codifica os parâmetros para serem seguros na URL
+            docs_param = ",".join(urllib.parse.quote(doc) for doc in documentos_selecionados)
+            cliente_param = urllib.parse.quote(nome_cliente_config)
+            
+            # Gera a URL completa
+            # ATENÇÃO: Se você tiver um domínio personalizado, troque a base da URL.
+            base_url = st.get_option("server.baseUrlPath") # Pega a URL base do Streamlit
+            url_gerada = f"https://{base_url}?cliente={cliente_param}&docs={docs_param}"
+            
+            st.success("✅ Link gerado com sucesso! Copie e envie para o seu cliente.")
+            st.code(url_gerada)
+
+# MODO 2: MODO CLIENTE (Se a URL tiver parâmetros)
+# Esta é a tela que o seu cliente vai ver ao acessar o link que você gerou.
 else:
-    documentos_necessarios = []
+    # Pega o nome do cliente e a lista de documentos da URL
+    nome_cliente = urllib.parse.unquote(params.get("cliente", "Não identificado"))
+    docs_string = urllib.parse.unquote(params.get("docs", ""))
+    documentos_necessarios = docs_string.split(',') if docs_string else []
 
-# Se a lista de documentos estiver vazia (link inválido ou sem docs)
-if not documentos_necessarios:
-    st.error("Este link é inválido ou não especifica documentos. Por favor, solicite um novo link de upload.")
-    st.stop() # Interrompe a execução do restante da página
-
-st.markdown("### Documentos Pendentes")
-
-# Dicionário para guardar os arquivos anexados temporariamente
-arquivos_anexados = {}
-
-# Define o número de colunas
-num_colunas = 2
-cols = st.columns(num_colunas)
-
-# Loop para criar os campos de upload dinamicamente
-for i, documento in enumerate(documentos_necessarios):
-    with cols[i % num_colunas]:
-        st.subheader(f'{documento}')
-        
-        uploaded_file = st.file_uploader(
-            f'Selecione o arquivo para {documento}',
-            type=['pdf', 'jpg', 'png', 'docx', 'jpeg'],
-            key=documento
-        )
-        
-        if uploaded_file is not None:
-            arquivos_anexados[documento] = uploaded_file
-
-st.markdown("---")
-
-# Botão para disparar o envio de todos os arquivos de uma vez
-if st.button('🚀 ENVIAR DOCUMENTOS PENDENTES'):
-    if not nome_cliente:
-        st.error("ERRO: Por favor, preencha o campo 'Nome do Cliente ou Empresa' antes de enviar.")
-    elif not arquivos_anexados:
-        st.warning("Aviso: Nenhum documento foi anexado.")
-    else:
-        with st.spinner("Enviando documentos..."):
-            erros = []
-            sucessos = 0
-            for documento, arquivo in arquivos_anexados.items():
-                file_content = arquivo.getvalue()
-                sucesso = enviar_email_com_anexo(f"{documento} ({nome_cliente})", file_content, arquivo.name)
-                if sucesso:
-                    sucessos += 1
-                else:
-                    erros.append(documento)
-            
-            if not erros:
-                st.success(f"🎉 Sucesso! {sucessos} documento(s) foram enviados.")
-            else:
-                st.error(f"Falha no envio para: {', '.join(erros)}.")
-# --- FIM DO NOVO BLOCO DE UPLOAD DINÂMICO ---
-
-# Botão para disparar o envio de todos os arquivos de uma vez
-if st.button('🚀 ENVIAR TODOS OS DOCUMENTOS'):
-    # 1. Verifica se o nome do cliente foi preenchido
-    if not nome_cliente:
-        st.error("ERRO: Por favor, preencha o campo 'Nome do Cliente ou Empresa' antes de enviar.")
-    # 2. Verifica se pelo menos um arquivo foi anexado
-    elif not arquivos_anexados:
-        st.warning("Aviso: Nenhum documento foi anexado. Por favor, selecione pelo menos um arquivo.")
-    # 3. Se tudo estiver certo, envia os e-mails
-    else:
-        with st.spinner("Enviando documentos... Por favor, aguarde."):
-            erros = []
-            sucessos = 0
-            # Loop para enviar cada arquivo guardado
-            for documento, arquivo in arquivos_anexados.items():
-                file_content = arquivo.getvalue()
-                sucesso = enviar_email_com_anexo(f"{documento} ({nome_cliente})", file_content, arquivo.name)
-                if sucesso:
-                    sucessos += 1
-                else:
-                    erros.append(documento)
-            
-            # Mensagem final
-            if not erros:
-                st.success(f"🎉 Sucesso! {sucessos} documento(s) foram enviados para o nosso sistema.")
-            else:
-                st.error(f"Falha no envio para os seguintes documentos: {', '.join(erros)}. Por favor, tente novamente.")
-
-# --- FIM DO NOVO BLOCO DE UPLOAD COM BOTÃO DE ENVIO ---
-# --- FIM DO NOVO SUB-BLOCO COM COLUNAS ---
+    # --- Interface do Cliente ---
+    col1, col2 = st.columns([1, 4])
+    with col1:
+        st.image("https://i.imgur.com/3z2e20a.png", width=100)
+    with col2:
+        st.title('Portal de Documentos')
+        st.write(f"Enviado para: **{nome_cliente}**")
     
-    if uploaded_file is not None:
-        if nome_cliente: # Verifica se o nome do cliente foi preenchido
-            with st.spinner(f'Enviando {documento}...'):
-                # Lê o conteúdo do arquivo
-                file_content = uploaded_file.getvalue()
-                
-                # Envia o e-mail
-                sucesso = enviar_email_com_anexo(f"{documento} ({nome_cliente})", file_content, uploaded_file.name)
-                
-                if sucesso:
-                    st.success(f'O documento "{documento}" foi enviado com sucesso para seu e-mail!')
-        else:
-            st.warning("Por favor, preencha o campo 'Nome do Cliente ou Empresa' antes de enviar os arquivos.")
-# --- FIM DO SUB-BLOCO DO LOOP (PARA SUBSTITUIR) ---
+    st.markdown("---")
+    st.info("Por favor, anexe cada um dos documentos solicitados nos campos correspondentes abaixo.")
+
+    if not documentos_necessarios:
+        st.error("Link inválido ou nenhum documento foi solicitado.")
+    else:
+        arquivos_anexados = {}
+        num_colunas = 2
+        cols = st.columns(num_colunas)
+
+        for i, documento in enumerate(documentos_necessarios):
+            with cols[i % num_colunas]:
+                st.subheader(f'{documento}')
+                uploaded_file = st.file_uploader(
+                    f'Selecione o arquivo',
+                    type=['pdf', 'jpg', 'png', 'docx', 'jpeg'],
+                    key=documento
+                )
+                if uploaded_file is not None:
+                    arquivos_anexados[documento] = uploaded_file
+
+        st.markdown("---")
+
+        if st.button('🚀 ENVIAR TODOS OS DOCUMENTOS'):
+            if not arquivos_anexados:
+                st.warning("Nenhum documento foi anexado.")
+            else:
+                with st.spinner("Enviando documentos... Por favor, aguarde."):
+                    erros = []
+                    sucessos = 0
+                    for doc, arquivo in arquivos_anexados.items():
+                        file_content = arquivo.getvalue()
+                        sucesso = enviar_email_com_anexo(f"{doc} ({nome_cliente})", file_content, arquivo.name)
+                        if sucesso:
+                            sucessos += 1
+                        else:
+                            erros.append(doc)
+                    
+                    if not erros:
+                        st.success(f"🎉 Sucesso! {sucessos} documento(s) foram enviados.")
+                    else:
+                        st.error(f"Falha no envio para: {', '.join(erros)}. Por favor, tente novamente.")
     
-    if uploaded_file is not None:
-        if nome_cliente: # Verifica se o nome do cliente foi preenchido
-            with st.spinner(f'Enviando {documento}...'):
-                # Lê o conteúdo do arquivo
-                file_content = uploaded_file.getvalue()
-                
-                # Envia o e-mail
-                sucesso = enviar_email_com_anexo(f"{documento} ({nome_cliente})", file_content, uploaded_file.name)
-                
-                if sucesso:
-                    st.success(f'O documento "{documento}" foi enviado com sucesso para seu e-mail!')
-        else:
-            st.warning("Por favor, preencha o campo 'Nome do Cliente ou Empresa' antes de enviar os arquivos.")
+    # Rodapé
+    st.markdown("""
+        <div style="text-align: center; margin-top: 40px; font-size: 12px; color: grey;">
+            <p>Desenvolvido por Angelo</p>
+        </div>
+    """, unsafe_allow_html=True)
 
-# --- INÍCIO DO NOVO BLOCO DO RODAPÉ ---
-st.markdown("---")
-st.success("✅ Tudo pronto! Após anexar os arquivos nos campos acima, o envio para o nosso sistema é automático.")
-
-# Rodapé profissional centralizado
-st.markdown("""
-    <div style="text-align: center; margin-top: 20px; font-size: 12px; color: grey;">
-        <p>Desenvolvido por Angelo | Contato: seu-email-aqui@exemplo.com</p>
-    </div>
-""", unsafe_allow_html=True)
-# --- FIM DO NOVO BLOCO DO RODAPÉ ---
+# --- FIM DO CÓDIGO COMPLETO ---
