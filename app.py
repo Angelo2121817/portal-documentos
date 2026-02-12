@@ -6,10 +6,12 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 # --- FIM DO BLOCO 1: IMPORTAÇÕES ---
 # --- CONFIGURAÇÃO DA PÁGINA ---
+# --- INÍCIO DO BLOCO 2: CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(
     page_title="Portal de Upload de Documentos",
     page_icon="📄"
 )
+# --- FIM DO BLOCO 2: CONFIGURAÇÃO DA PÁGINA ---
 
 # --- FUNÇÃO DE ENVIO DE E-MAIL ---
 def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
