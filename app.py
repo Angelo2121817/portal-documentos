@@ -1,4 +1,4 @@
-# --- INÍCIO DO CÓDIGO COMPLETO - app.py (VERSÃO FINAL OTIMIZADA) ---
+# --- INÍCIO DO CÓDIGO COMPLETO - app.py (VERSÃO FINAL CORRIGIDA) ---
 
 import streamlit as st
 import smtplib
@@ -18,10 +18,8 @@ st.set_page_config(
 # --- Bloco 1.5: Estilo CSS Moderno e Profissional ---
 st.markdown("""
 <style>
-    /* Importar fonte moderna */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-    /* Variáveis de cor */
     :root {
         --primary-color: #3b82f6;
         --primary-dark: #1e40af;
@@ -37,7 +35,6 @@ st.markdown("""
         --text-secondary: #64748b;
     }
 
-    /* Estilo geral da página */
     * {
         font-family: 'Inter', sans-serif !important;
     }
@@ -51,7 +48,6 @@ st.markdown("""
         padding: 2rem !important;
     }
 
-    /* Títulos */
     h1, h2, h3, h4, h5, h6 {
         color: #0f172a !important;
         font-weight: 700 !important;
@@ -75,13 +71,11 @@ st.markdown("""
         margin-bottom: 0.75rem !important;
     }
 
-    /* Texto geral */
     p, span, div {
         color: #475569 !important;
         line-height: 1.6 !important;
     }
 
-    /* Botões */
     .stButton > button {
         background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
         color: #ffffff !important;
@@ -105,7 +99,6 @@ st.markdown("""
         transform: translateY(0) !important;
     }
 
-    /* Input fields */
     .stTextInput > div > div > input,
     .stSelectbox > div > div > select,
     .stMultiSelect > div > div > div {
@@ -124,7 +117,6 @@ st.markdown("""
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
     }
 
-    /* Cards de informação */
     .stInfo, .stSuccess, .stWarning, .stError {
         border-radius: 8px !important;
         border-left: 4px solid !important;
@@ -153,7 +145,6 @@ st.markdown("""
         background-color: rgba(239, 68, 68, 0.05) !important;
     }
 
-    /* File uploader */
     .stFileUploader {
         border: 2px dashed #3b82f6 !important;
         border-radius: 8px !important;
@@ -167,7 +158,6 @@ st.markdown("""
         background-color: rgba(59, 130, 246, 0.05) !important;
     }
 
-    /* Divisor */
     hr {
         border: none !important;
         height: 1px !important;
@@ -175,23 +165,19 @@ st.markdown("""
         margin: 2rem 0 !important;
     }
 
-    /* Spinner */
     .stSpinner {
         color: #3b82f6 !important;
     }
 
-    /* Subheader */
     .stSubheader {
         color: #1e293b !important;
         font-weight: 600 !important;
     }
 
-    /* Markdown */
     .stMarkdown {
         color: #475569 !important;
     }
 
-    /* Código */
     code {
         background-color: #f1f5f9 !important;
         border-radius: 4px !important;
@@ -200,7 +186,6 @@ st.markdown("""
         font-family: 'Courier New', monospace !important;
     }
 
-    /* ===== DESTAQUE EM DOCUMENTOS (REDUZIDO) ===== */
     .document-card-highlight {
         background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%) !important;
         border-radius: 8px !important;
@@ -228,27 +213,6 @@ st.markdown("""
         display: inline-block !important;
     }
 
-    /* Botão copiar */
-    .copy-button {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-        color: #ffffff !important;
-        border: none !important;
-        border-radius: 6px !important;
-        padding: 0.5rem 1rem !important;
-        font-weight: 600 !important;
-        font-size: 0.875rem !important;
-        cursor: pointer !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2) !important;
-    }
-
-    .copy-button:hover {
-        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
-        box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3) !important;
-        transform: translateY(-1px) !important;
-    }
-
-    /* Animação de entrada */
     @keyframes fadeIn {
         from {
             opacity: 0;
@@ -264,7 +228,6 @@ st.markdown("""
         animation: fadeIn 0.5s ease-out !important;
     }
 
-    /* Responsividade */
     @media (max-width: 768px) {
         h1 {
             font-size: 1.875rem !important;
@@ -362,30 +325,27 @@ if not params:
     
     st.markdown("")
     
-    col_btn1, col_btn2, col_btn3 = st.columns([2, 1, 1])
-    
-    with col_btn1:
-        if st.button("🔗 GERAR LINK PARA O CLIENTE", use_container_width=True):
-            if not nome_cliente_config:
-                st.error("❌ Por favor, digite o nome do cliente.")
-            elif not documentos_selecionados:
-                st.error("❌ Por favor, selecione pelo menos um documento.")
-            else:
-                docs_param = ",".join(urllib.parse.quote(doc) for doc in documentos_selecionados)
-                cliente_param = urllib.parse.quote(nome_cliente_config)
-                URL_BASE_DA_SUA_APP = "app-documentos-7l5ecrvyv7lhjl3ska9e3t.streamlit.app"
-                url_gerada = f"https://{URL_BASE_DA_SUA_APP}?cliente={cliente_param}&docs={docs_param}"
-                
-                st.success("✅ Link gerado com sucesso!")
-                st.markdown(f"""
-                <div style="background-color: #f1f5f9; padding: 1rem; border-radius: 8px; border: 2px solid #3b82f6; margin: 1rem 0;">
-                    <p style="margin: 0 0 0.75rem 0; color: #64748b; font-size: 0.875rem;">Copie o link abaixo e envie para o cliente:</p>
-                    <div style="display: flex; gap: 0.5rem; align-items: center;">
-                        <code style="flex: 1; display: block; padding: 0.75rem; background-color: #ffffff; border-radius: 4px; word-break: break-all; color: #1e293b; border: 1px solid #e2e8f0;">{url_gerada}</code>
-                        <button class="copy-button" onclick="navigator.clipboard.writeText('{url_gerada}'); alert('Link copiado para a área de transferência!');">📋 Copiar</button>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
+    if st.button("🔗 GERAR LINK PARA O CLIENTE", use_container_width=True):
+        if not nome_cliente_config:
+            st.error("❌ Por favor, digite o nome do cliente.")
+        elif not documentos_selecionados:
+            st.error("❌ Por favor, selecione pelo menos um documento.")
+        else:
+            docs_param = ",".join(urllib.parse.quote(doc) for doc in documentos_selecionados)
+            cliente_param = urllib.parse.quote(nome_cliente_config)
+            URL_BASE_DA_SUA_APP = "app-documentos-7l5ecrvyv7lhjl3ska9e3t.streamlit.app"
+            url_gerada = f"https://{URL_BASE_DA_SUA_APP}?cliente={cliente_param}&docs={docs_param}"
+            
+            st.success("✅ Link gerado com sucesso!")
+            st.markdown("""
+            <div style="background-color: #f1f5f9; padding: 1rem; border-radius: 8px; border: 2px solid #3b82f6; margin: 1rem 0;">
+                <p style="margin: 0 0 0.75rem 0; color: #64748b; font-size: 0.875rem;">Copie o link abaixo e envie para o cliente:</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.code(url_gerada, language="text")
+            
+            st.info("✅ Link exibido acima. Use Ctrl+C (ou Cmd+C no Mac) para copiar.")
     
     st.markdown("---")
     st.markdown("""
@@ -410,7 +370,6 @@ else:
     
     st.markdown("---")
     
-    # Info box
     st.markdown("""
     <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%); 
                 padding: 1.5rem; border-radius: 8px; border-left: 4px solid #10b981;">
@@ -424,7 +383,6 @@ else:
     if not documentos_necessarios:
         st.error("❌ Link inválido ou nenhum documento foi solicitado.")
     else:
-        # Contador de documentos
         st.markdown(f"""
         <div style="background-color: #f1f5f9; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
             <p style="margin: 0; color: #475569;"><strong>📊 Documentos a enviar:</strong> <span style="color: #3b82f6; font-weight: 700;">{len(documentos_necessarios)}</span></p>
@@ -437,7 +395,6 @@ else:
         
         for i, documento in enumerate(documentos_necessarios):
             with cols[i % num_colunas]:
-                # Card destacado (reduzido)
                 st.markdown(f"""
                 <div class="document-card-highlight">
                     <span class="document-icon-medium">📄</span>
@@ -461,7 +418,6 @@ else:
         
         st.markdown("---")
         
-        # Progresso
         progresso = len(arquivos_anexados) / len(documentos_necessarios)
         st.markdown(f"""
         <div style="background-color: #f1f5f9; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
