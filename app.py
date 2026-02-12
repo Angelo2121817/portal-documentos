@@ -49,6 +49,7 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
         return False
 # --- FIM DO BLOCO 3: FUNÇÃO DE ENVIO DE E-MAIL ---
 # --- INTERFACE DA APLICAÇÃO ---
+# --- INÍCIO DO BLOCO 4: INTERFACE DA APLICAÇÃO ---
 st.title('📄 Portal de Upload de Documentos')
 st.write("Por favor, envie os documentos necessários para o licenciamento ambiental.")
 
@@ -89,3 +90,4 @@ for documento in documentos_necessarios:
 
 st.markdown("---")
 st.write("Desenvolvido para agilizar o seu processo.")
+# --- FIM DO BLOCO 4: INTERFACE DA APLICAÇÃO ---
