@@ -12,7 +12,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- CSS MINIMALISTA & PROFISSIONAL (TEMA CINZA/CLEAN) ---
+# --- CSS MINIMALISTA & PROFISSIONAL (TEMA SUAVE) ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -43,12 +43,13 @@ st.markdown("""
         font-weight: 700 !important;
     }
     
-    /* Header Unificado */
+    /* Header Unificado - BAIXADO 7CM (aprox 120px de margem) */
     .header-container {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        margin-top: 120px; /* <--- AQUI ESTÁ O ESPAÇAMENTO DO TOPO */
         margin-bottom: 40px;
         padding-bottom: 20px;
         border-bottom: 1px solid #e2e8f0;
@@ -57,8 +58,8 @@ st.markdown("""
     /* LOGO GIGANTE E CENTRALIZADA */
     .header-logo {
         height: auto;
-        width: 550px; /* Aumentado para maior destaque */
-        max-width: 100%; /* Responsivo */
+        width: 550px; 
+        max-width: 100%; 
         margin-bottom: 10px;
         filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
     }
@@ -67,7 +68,7 @@ st.markdown("""
     .doc-card {
         background-color: #ffffff;
         border: 1px solid #e2e8f0;
-        border-left: 5px solid #64748b; /* Detalhe Cinza Metálico */
+        border-left: 5px solid #94a3b8; /* Cinza Suave no detalhe */
         border-radius: 8px;
         padding: 1.2rem;
         margin-bottom: 1rem;
@@ -75,22 +76,22 @@ st.markdown("""
     }
     
     .doc-card:hover {
-        border-color: #94a3b8;
+        border-color: #cbd5e1;
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         transform: translateY(-2px);
     }
 
     .doc-title {
         font-weight: 700;
-        color: #1e293b;
+        color: #334155;
         font-size: 1.1rem;
         display: block;
     }
 
-    /* BOTÕES DE ALTO CONTRASTE */
+    /* BOTÕES SUAVIZADOS (Cinza Nuvem) */
     .stButton > button {
-        background-color: #475569 !important; /* Cinza Chumbo Médio */
-        color: #ffffff !important; /* Texto Branco Puro */
+        background-color: #64748b !important; /* <--- COR SUAVIZADA (Cinza Azulado Médio) */
+        color: #ffffff !important;
         border: none !important;
         padding: 1rem 2rem !important;
         font-size: 1.1rem !important;
@@ -102,17 +103,17 @@ st.markdown("""
     }
     
     .stButton > button:hover {
-        background-color: #334155 !important; /* Mais escuro no hover */
-        box-shadow: 0 6px 15px rgba(0,0,0,0.15) !important;
+        background-color: #475569 !important; /* Escurece levemente no hover */
+        box-shadow: 0 6px 15px rgba(0,0,0,0.10) !important;
         transform: translateY(-2px);
         color: #ffffff !important;
     }
 
     /* Inputs */
     .stTextInput > div > div > input, .stMultiSelect > div > div > div {
-        background-color: #f1f5f9;
+        background-color: #f8fafc;
         border: 1px solid #cbd5e1;
-        color: #0f172a;
+        color: #334155;
         border-radius: 6px;
         font-size: 1rem;
     }
@@ -127,15 +128,15 @@ st.markdown("""
     }
     
     .footer-text {
-        color: #64748b;
+        color: #94a3b8; /* Texto do rodapé mais suave */
         font-size: 0.95rem;
         margin-bottom: 8px;
     }
     
     .footer-links a {
-        color: #475569;
+        color: #64748b; /* Links suaves */
         text-decoration: none;
-        font-weight: 700;
+        font-weight: 600;
         margin: 0 15px;
         font-size: 1rem;
         transition: color 0.2s;
@@ -144,7 +145,7 @@ st.markdown("""
     }
     
     .footer-links a:hover {
-        color: #0f172a;
+        color: #334155;
         text-decoration: underline;
     }
 
@@ -185,7 +186,7 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
 params = st.query_params
 LOGO_URL = "https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png"
 
-# --- HEADER SÓ COM LOGO (Maior) ---
+# --- HEADER SÓ COM LOGO (Posicionada mais abaixo) ---
 st.markdown(f"""
     <div class="header-container">
         <img src="{LOGO_URL}" class="header-logo">
@@ -255,8 +256,8 @@ else:
     docs_string = urllib.parse.unquote(params.get("docs", ""))
     documentos_necessarios = docs_string.split(',') if docs_string else []
 
-    st.markdown(f"<h3 style='text-align: center; color: #64748b; font-weight: 400;'>Portal de Envio de Documentos</h3>", unsafe_allow_html=True)
-    st.markdown(f"<h2 style='text-align: center; color: #1e293b; margin-top: -10px; font-size: 2.5rem;'>{nome_cliente}</h2>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='text-align: center; color: #94a3b8; font-weight: 400; font-size: 1.1rem;'>Portal de Envio de Documentos</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='text-align: center; color: #334155; margin-top: -5px; font-size: 2.2rem;'>{nome_cliente}</h2>", unsafe_allow_html=True)
     st.markdown("---")
     
     if not documentos_necessarios:
@@ -320,6 +321,6 @@ st.markdown("""
     </div>
     <br>
     <p class="footer-text">Soluções Ambientais e Regularizações</p>
-    <p class="footer-text" style="font-size: 0.8rem; color: #94a3b8;">© 2026 Todos os direitos reservados.</p>
+    <p class="footer-text" style="font-size: 0.8rem; color: #cbd5e1;">© 2026 Todos os direitos reservados.</p>
 </div>
 """, unsafe_allow_html=True)
