@@ -166,10 +166,42 @@ else:
                     else:
                         st.error(f"Falha no envio para: {', '.join(erros)}. Por favor, tente novamente.")
     
-    st.markdown("""
-        <div style="text-align: center; margin-top: 40px; font-size: 12px; color: grey;">
-            <p>Desenvolvido por Angelo</p>
+    # --- RODAPÉ PROFISSIONAL ---
+st.markdown("""
+<div style="
+    background: linear-gradient(135deg, rgba(14,165,233,0.1) 0%, rgba(59,130,246,0.1) 100%);
+    border-top: 1px solid rgba(255,255,255,0.3);
+    padding: 2rem 1rem;
+    margin-top: 3rem;
+    border-radius: 0 0 12px 12px;
+    text-align: center;
+    backdrop-filter: blur(8px);
+">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <div style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        ">
+            <img src="https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png" 
+                 alt="Logo Metal Química" 
+                 style="height: 40px; width: auto;"
+                 onerror="this.style.display='none';">
+            <h3 style="color: #0f172a; margin: 0; font-size: 1.4rem; font-weight: 700;">
+                Metal Química Consultoria
+            </h3>
         </div>
-    """, unsafe_allow_html=True)
-
-# --- FIM DO CÓDIGO COMPLETO ---
+        <p style="color: #475569; font-size: 0.95rem; margin: 0.5rem 0; font-weight: 400;">
+            Portal de Gestão de Documentos | Licenças Ambientais e Regularizações
+        </p>
+        <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-top: 1rem;">
+            <a href="mailto:metalquimicaconsultoria@gmail.com" style="color: #3b82f6; text-decoration: none; font-weight: 500;">📧 Contato</a>
+            <a href="tel:+551234567890" style="color: #3b82f6; text-decoration: none; font-weight: 500;">📞 Telefone</a>
+            <span style="color: #64748b; font-size: 0.85rem;">© 2026 Metal Química. Todos os direitos reservados.</span>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
