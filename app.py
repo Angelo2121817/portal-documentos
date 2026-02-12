@@ -1,7 +1,56 @@
 import streamlit as st
-import os
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
 
-# Lista de documentos necessários para licenciamento ambiental
+# --- CONFIGURAÇÃO DA PÁGINA ---
+st.set_page_config(
+    page_title="Portal de Upload de Documentos",
+    page_icon="📄"
+)
+
+# --- FUNÇÃO DE ENVIO DE E-MAIL ---
+def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
+    try:
+        # Pega as credenciais dos Secrets do Streamlit
+        sender_email = st.secrets["SENDER_EMAIL"]
+        sender_password = st.secrets["SENDER_PASSWORD"]
+        recipient_email = st.secrets["RECIPIENT_EMAIL"]
+
+        # Cria a mensagem de e-mail
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = recipient_email
+        msg['Subject'] = f"Novo Documento Recebido: {nome_documento}"
+
+        # Corpo do e-mail
+        corpo = f"Olá Angelo,\n\nUm novo documento foi enviado através do portal.\n\nTipo de Documento: {nome_documento}\nNome Original do Arquivo: {nome_arquivo_original}\n\nO arquivo está em anexo."
+        msg.attach(MIMEText(corpo, 'plain'))
+
+        # Anexa o arquivo
+        anexo = MIMEApplication(conteudo_arquivo, Name=nome_arquivo_original)
+        anexo['Content-Disposition'] = f'attachment; filename="{nome_arquivo_original}"'
+        msg.attach(anexo)
+
+        # Conecta ao servidor SMTP do Gmail e envia o e-mail
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            server.starttls()
+            server.login(sender_email, sender_password)
+            server.send_message(msg)
+        
+        return True
+    except Exception as e:
+        st.error(f"Ocorreu um erro ao enviar o e-mail: {e}")
+        return False
+
+# --- INTERFACE DA APLICAÇÃO ---
+st.title('📄 Portal de Upload de Documentos')
+st.write("Por favor, envie os documentos necessários para o licenciamento ambiental.")
+
+# Adiciona um campo para o nome do cliente/empresa
+nome_cliente = st.text_input("Nome do Cliente ou Empresa*", help="Este nome será usado para organizar os documentos.")
+
 documentos_necessarios = [
     'Contrato Social',
     'Cartão CNPJ',
@@ -10,36 +59,29 @@ documentos_necessarios = [
     'ART do Responsável Técnico'
 ]
 
-# Função para criar a pasta 'documentos_recebidos' se ela não existir
-def criar_pasta():
-    if not os.path.exists('documentos_recebidos'):
-        os.makedirs('documentos_recebidos')
-
-# Chamada da função para garantir que a pasta exista
-criar_pasta()
-
-# Título da aplicação
-st.title('Portal de Upload de Documentos para Licenciamento Ambiental')
-
-# Loop para cada documento na lista
+# Loop para cada documento
 for documento in documentos_necessarios:
-    # Exibe o nome do documento
     st.subheader(f'Upload para: {documento}')
     
-    # Componente de upload de arquivo
-    uploaded_file = st.file_uploader(f'Selecione o arquivo para {documento}', type=['pdf', 'jpg', 'png', 'docx'], key=documento)
+    uploaded_file = st.file_uploader(
+        f'Selecione o arquivo para {documento}', 
+        type=['pdf', 'jpg', 'png', 'docx', 'jpeg'], 
+        key=documento
+    )
     
-    # Verifica se um arquivo foi enviado
     if uploaded_file is not None:
-        # Cria o nome do arquivo salvo: combinação do nome do documento e nome original
-        nome_arquivo_salvo = f'{documento.replace(" ", "_")}-{uploaded_file.name}'
-        
-        # Caminho completo para salvar o arquivo
-        caminho_arquivo = os.path.join('documentos_recebidos', nome_arquivo_salvo)
-        
-        # Salva o arquivo
-        with open(caminho_arquivo, 'wb') as f:
-            f.write(uploaded_file.getbuffer())
-        
-        # Exibe mensagem de sucesso
-        st.success(f'Arquivo "{nome_arquivo_salvo}" salvo com sucesso!')
+        if nome_cliente: # Verifica se o nome do cliente foi preenchido
+            with st.spinner(f'Enviando {documento}...'):
+                # Lê o conteúdo do arquivo
+                file_content = uploaded_file.getvalue()
+                
+                # Envia o e-mail
+                sucesso = enviar_email_com_anexo(f"{documento} ({nome_cliente})", file_content, uploaded_file.name)
+                
+                if sucesso:
+                    st.success(f'O documento "{documento}" foi enviado com sucesso para seu e-mail!')
+        else:
+            st.warning("Por favor, preencha o campo 'Nome do Cliente ou Empresa' antes de enviar os arquivos.")
+
+st.markdown("---")
+st.write("Desenvolvido para agilizar o seu processo.")
