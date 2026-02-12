@@ -1,4 +1,4 @@
-# --- INÍCIO DO CÓDIGO COMPLETO - app.py (VERSÃO REPAGINADA MODERNA) ---
+# --- INÍCIO DO CÓDIGO COMPLETO - app.py (VERSÃO COM DESTAQUE NO DOCUMENTO) ---
 
 import streamlit as st
 import smtplib
@@ -15,7 +15,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- Bloco 1.5: Estilo CSS Moderno e Profissional ---
+# --- Bloco 1.5: Estilo CSS Moderno e Profissional com Destaque em Documentos ---
 st.markdown("""
 <style>
     /* Importar fonte moderna */
@@ -200,6 +200,42 @@ st.markdown("""
         font-family: 'Courier New', monospace !important;
     }
 
+    /* ===== NOVO: DESTAQUE EM DOCUMENTOS ===== */
+    .document-card-highlight {
+        background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%) !important;
+        border-radius: 12px !important;
+        padding: 1.5rem !important;
+        margin: 1rem 0 !important;
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3) !important;
+        border: 2px solid rgba(255, 255, 255, 0.2) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .document-card-highlight:hover {
+        transform: translateY(-5px) !important;
+        box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4) !important;
+    }
+
+    .document-icon-large {
+        font-size: 3rem !important;
+        margin-bottom: 0.75rem !important;
+        display: block !important;
+    }
+
+    .document-name-large {
+        font-size: 1.75rem !important;
+        font-weight: 700 !important;
+        color: #ffffff !important;
+        margin: 0.5rem 0 !important;
+        letter-spacing: -0.5px !important;
+    }
+
+    .document-status {
+        font-size: 0.875rem !important;
+        color: rgba(255, 255, 255, 0.9) !important;
+        margin-top: 0.5rem !important;
+    }
+
     /* Animação de entrada */
     @keyframes fadeIn {
         from {
@@ -228,6 +264,14 @@ st.markdown("""
         
         .stButton > button {
             width: 100% !important;
+        }
+
+        .document-name-large {
+            font-size: 1.25rem !important;
+        }
+
+        .document-icon-large {
+            font-size: 2rem !important;
         }
     }
 </style>
@@ -264,7 +308,7 @@ if not params:
     # MODO ADMIN
     col_logo, col_title = st.columns([1, 5])
     with col_logo:
-        st.image("https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png", width=100)
+        st.image("https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png", width=150)
     with col_title:
         st.title("⚗️ Portal de Documentos")
         st.markdown("**Metal Química Consultoria** - Gerenciamento de Documentação")
@@ -344,7 +388,7 @@ else:
     # Header
     col_logo, col_title = st.columns([1, 5])
     with col_logo:
-        st.image("https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png", width=100)
+        st.image("https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png", width=150)
     with col_title:
         st.title("⚗️ Portal de Envio de Documentos")
         st.markdown(f"**Cliente:** {nome_cliente}")
@@ -378,9 +422,12 @@ else:
         
         for i, documento in enumerate(documentos_necessarios):
             with cols[i % num_colunas]:
+                # NOVO: Card destacado com nome do documento em grande
                 st.markdown(f"""
-                <div style="background-color: #ffffff; padding: 1rem; border-radius: 8px; border: 2px solid #e2e8f0; margin-bottom: 1rem;">
-                    <p style="margin: 0 0 0.5rem 0; color: #1e293b; font-weight: 600; font-size: 0.875rem;">📄 {documento}</p>
+                <div class="document-card-highlight">
+                    <span class="document-icon-large">📄</span>
+                    <div class="document-name-large">{documento}</div>
+                    <div class="document-status">Clique abaixo para selecionar o arquivo</div>
                 </div>
                 """, unsafe_allow_html=True)
                 
