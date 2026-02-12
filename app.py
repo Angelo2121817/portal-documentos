@@ -20,9 +20,9 @@ st.markdown("""
     /* Reset e Fonte Global */
     * { font-family: 'Inter', sans-serif; color: #334155; }
 
-    /* Fundo da Página: Cinza Claro Suave (Papel) */
+    /* Fundo da Página: Cinza Claro Suave */
     [data-testid="stAppViewContainer"] {
-        background-color: #f8fafc !important; /* Cinza muito claro */
+        background-color: #f8fafc !important; 
         background-image: none !important;
     }
 
@@ -32,14 +32,14 @@ st.markdown("""
         border-radius: 12px !important;
         padding: 3rem !important;
         margin-top: 2rem !important;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important; /* Sombra muito leve */
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important;
         max-width: 1200px !important;
         border: 1px solid #e2e8f0;
     }
 
     /* Títulos */
     h1, h2, h3 {
-        color: #1e293b !important; /* Cinza Chumbo Escuro */
+        color: #1e293b !important;
         font-weight: 700 !important;
     }
     
@@ -49,27 +49,18 @@ st.markdown("""
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        margin-bottom: 50px;
-        padding-bottom: 30px;
+        margin-bottom: 40px;
+        padding-bottom: 20px;
         border-bottom: 1px solid #e2e8f0;
     }
     
-    /* LOGO AUMENTADA (5X) */
+    /* LOGO GIGANTE E CENTRALIZADA */
     .header-logo {
         height: auto;
-        width: 450px; /* Aumentado significativamente */
-        max-width: 90%; /* Responsivo para celulares */
-        margin-bottom: 20px;
-    }
-    
-    .header-title {
-        font-size: 2rem;
-        color: #334155;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin: 0;
-        text-align: center;
+        width: 550px; /* Aumentado para maior destaque */
+        max-width: 100%; /* Responsivo */
+        margin-bottom: 10px;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
     }
 
     /* Cards de Documentos - Estilo "Clean" */
@@ -96,14 +87,14 @@ st.markdown("""
         display: block;
     }
 
-    /* BOTÕES CORRIGIDOS (Mais claros e legíveis) */
+    /* BOTÕES DE ALTO CONTRASTE */
     .stButton > button {
-        background-color: #475569 !important; /* Cinza Chumbo Médio (Mais claro que antes) */
+        background-color: #475569 !important; /* Cinza Chumbo Médio */
         color: #ffffff !important; /* Texto Branco Puro */
         border: none !important;
         padding: 1rem 2rem !important;
-        font-size: 1.1rem !important; /* Fonte maior */
-        font-weight: 600 !important; /* Negrito */
+        font-size: 1.1rem !important;
+        font-weight: 600 !important;
         border-radius: 8px !important;
         transition: all 0.2s ease !important;
         width: 100%;
@@ -111,14 +102,10 @@ st.markdown("""
     }
     
     .stButton > button:hover {
-        background-color: #334155 !important; /* Um pouco mais escuro no hover */
+        background-color: #334155 !important; /* Mais escuro no hover */
         box-shadow: 0 6px 15px rgba(0,0,0,0.15) !important;
         transform: translateY(-2px);
         color: #ffffff !important;
-    }
-    
-    .stButton > button:active {
-        transform: translateY(0);
     }
 
     /* Inputs */
@@ -198,11 +185,10 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
 params = st.query_params
 LOGO_URL = "https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png"
 
-# --- HEADER UNIFICADO (LOGO GRANDE) ---
+# --- HEADER SÓ COM LOGO (Maior) ---
 st.markdown(f"""
     <div class="header-container">
         <img src="{LOGO_URL}" class="header-logo">
-        <h1 class="header-title">Metal Química Consultoria</h1>
     </div>
 """, unsafe_allow_html=True)
 
@@ -333,7 +319,7 @@ st.markdown("""
         <a href="mailto:metalquimicaconsultoria@gmail.com">📧 metalquimicaconsultoria@gmail.com</a>
     </div>
     <br>
-    <p class="footer-text">Metal Química Consultoria • Soluções Ambientais</p>
+    <p class="footer-text">Soluções Ambientais e Regularizações</p>
     <p class="footer-text" style="font-size: 0.8rem; color: #94a3b8;">© 2026 Todos os direitos reservados.</p>
 </div>
 """, unsafe_allow_html=True)
