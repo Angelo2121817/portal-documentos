@@ -49,31 +49,34 @@ st.markdown("""
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        margin-bottom: 40px;
-        padding-bottom: 20px;
+        margin-bottom: 50px;
+        padding-bottom: 30px;
         border-bottom: 1px solid #e2e8f0;
     }
     
+    /* LOGO AUMENTADA (5X) */
     .header-logo {
-        height: 90px;
-        width: auto;
-        margin-bottom: 15px;
+        height: auto;
+        width: 450px; /* Aumentado significativamente */
+        max-width: 90%; /* Responsivo para celulares */
+        margin-bottom: 20px;
     }
     
     .header-title {
-        font-size: 1.8rem;
+        font-size: 2rem;
         color: #334155;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 1px;
         margin: 0;
+        text-align: center;
     }
 
     /* Cards de Documentos - Estilo "Clean" */
     .doc-card {
         background-color: #ffffff;
         border: 1px solid #e2e8f0;
-        border-left: 4px solid #64748b; /* Detalhe Cinza Metálico */
+        border-left: 5px solid #64748b; /* Detalhe Cinza Metálico */
         border-radius: 8px;
         padding: 1.2rem;
         margin-bottom: 1rem;
@@ -81,48 +84,55 @@ st.markdown("""
     }
     
     .doc-card:hover {
-        border-color: #cbd5e1;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        border-color: #94a3b8;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         transform: translateY(-2px);
     }
 
     .doc-title {
-        font-weight: 600;
+        font-weight: 700;
         color: #1e293b;
-        font-size: 1rem;
+        font-size: 1.1rem;
         display: block;
     }
 
-    /* Botões - Sóbrios (Cinza Chumbo) */
+    /* BOTÕES CORRIGIDOS (Mais claros e legíveis) */
     .stButton > button {
-        background-color: #334155 !important; /* Cinza Escuro */
-        color: white !important;
+        background-color: #475569 !important; /* Cinza Chumbo Médio (Mais claro que antes) */
+        color: #ffffff !important; /* Texto Branco Puro */
         border: none !important;
-        padding: 0.8rem 2rem !important;
-        font-size: 1rem !important;
-        font-weight: 500 !important;
-        border-radius: 6px !important;
+        padding: 1rem 2rem !important;
+        font-size: 1.1rem !important; /* Fonte maior */
+        font-weight: 600 !important; /* Negrito */
+        border-radius: 8px !important;
         transition: all 0.2s ease !important;
         width: 100%;
+        letter-spacing: 0.5px;
     }
     
     .stButton > button:hover {
-        background-color: #1e293b !important; /* Mais escuro no hover */
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-        transform: translateY(-1px);
+        background-color: #334155 !important; /* Um pouco mais escuro no hover */
+        box-shadow: 0 6px 15px rgba(0,0,0,0.15) !important;
+        transform: translateY(-2px);
+        color: #ffffff !important;
+    }
+    
+    .stButton > button:active {
+        transform: translateY(0);
     }
 
     /* Inputs */
     .stTextInput > div > div > input, .stMultiSelect > div > div > div {
-        background-color: #f8fafc;
+        background-color: #f1f5f9;
         border: 1px solid #cbd5e1;
-        color: #334155;
+        color: #0f172a;
         border-radius: 6px;
+        font-size: 1rem;
     }
 
     /* Rodapé Limpo */
     .footer-container {
-        margin-top: 50px;
+        margin-top: 60px;
         padding-top: 30px;
         border-top: 1px solid #e2e8f0;
         text-align: center;
@@ -131,17 +141,19 @@ st.markdown("""
     
     .footer-text {
         color: #64748b;
-        font-size: 0.9rem;
-        margin-bottom: 5px;
+        font-size: 0.95rem;
+        margin-bottom: 8px;
     }
     
     .footer-links a {
         color: #475569;
         text-decoration: none;
-        font-weight: 600;
+        font-weight: 700;
         margin: 0 15px;
-        font-size: 0.95rem;
+        font-size: 1rem;
         transition: color 0.2s;
+        display: inline-block;
+        padding: 5px;
     }
     
     .footer-links a:hover {
@@ -186,7 +198,7 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
 params = st.query_params
 LOGO_URL = "https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png"
 
-# --- HEADER UNIFICADO (Limpo e Centralizado) ---
+# --- HEADER UNIFICADO (LOGO GRANDE) ---
 st.markdown(f"""
     <div class="header-container">
         <img src="{LOGO_URL}" class="header-logo">
@@ -258,7 +270,7 @@ else:
     documentos_necessarios = docs_string.split(',') if docs_string else []
 
     st.markdown(f"<h3 style='text-align: center; color: #64748b; font-weight: 400;'>Portal de Envio de Documentos</h3>", unsafe_allow_html=True)
-    st.markdown(f"<h2 style='text-align: center; color: #1e293b; margin-top: -10px;'>{nome_cliente}</h2>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='text-align: center; color: #1e293b; margin-top: -10px; font-size: 2.5rem;'>{nome_cliente}</h2>", unsafe_allow_html=True)
     st.markdown("---")
     
     if not documentos_necessarios:
@@ -286,7 +298,7 @@ else:
                 )
                 if uploaded_file is not None:
                     arquivos_anexados[documento] = uploaded_file
-                    st.markdown("<span style='color: #10b981; font-size: 0.8rem; font-weight: 600;'>✓ Arquivo anexado</span>", unsafe_allow_html=True)
+                    st.markdown("<div style='text-align: center; margin-top: 5px;'><span style='color: #10b981; font-size: 0.9rem; font-weight: 700; background-color: #ecfdf5; padding: 4px 8px; border-radius: 4px;'>✓ Arquivo Pronto</span></div>", unsafe_allow_html=True)
 
         st.markdown("<br><br>", unsafe_allow_html=True)
 
