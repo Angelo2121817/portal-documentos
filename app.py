@@ -90,16 +90,24 @@ if not params:
         elif not documentos_selecionados:
             st.error("Por favor, selecione pelo menos um documento.")
         else:
+           # --- INÍCIO DO NOVO BLOCO DE GERAÇÃO DE LINK (CORRIGIDO) ---
             docs_param = ",".join(urllib.parse.quote(doc) for doc in documentos_selecionados)
             cliente_param = urllib.parse.quote(nome_cliente_config)
             
-            # Pega a URL base do Streamlit de forma dinâmica
-            base_url = st.get_option("server.baseUrlPath")
-            url_gerada = f"https://{base_url}?cliente={cliente_param}&docs={docs_param}"
+            # =======================================================================
+            # ATENÇÃO, ANGELO: COLOQUE A URL BASE DA SUA APLICAÇÃO AQUI
+            # Exemplo: se a sua URL é "https://meu-portal-docs.streamlit.app",
+            # você deve escrever: URL_BASE_DA_SUA_APP = "meu-portal-docs.streamlit.app"
+            # =======================================================================
+            URL_BASE_DA_SUA_APP = "app-documentos-7l5ecrvyv7lhjl3ska9e3t.streamlit.app"
+            # =======================================================================
+
+            # Monta o link final e correto
+            url_gerada = f"https://{URL_BASE_DA_SUA_APP}?cliente={cliente_param}&docs={docs_param}"
             
             st.success("✅ Link gerado com sucesso! Copie e envie para o seu cliente.")
             st.code(url_gerada)
-
+# --- FIM DO NOVO BLOCO DE GERAÇÃO DE LINK (CORRIGIDO) ---
 # MODO 2: MODO CLIENTE (O QUE O CLIENTE VÊ)
 else:
     nome_cliente = urllib.parse.unquote(params.get("cliente", "Não identificado"))
