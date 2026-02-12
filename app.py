@@ -1,4 +1,4 @@
-# --- INÍCIO DO CÓDIGO COMPLETO - app.py (VERSÃO COM CORREÇÃO DE LINK) ---
+# --- INÍCIO DO CÓDIGO COMPLETO - app.py (VERSÃO FINAL COM LISTA ATUALIZADA) ---
 
 import streamlit as st
 import smtplib
@@ -11,10 +11,10 @@ import urllib.parse
 st.set_page_config(
     page_title="Portal de Documentos",
     page_icon="📄",
-    layout="wide"
+    layout="wide" # Deixa a página mais larga para caber mais colunas
 )
 
-# --- Bloco 2: Função de Envio de E-mail ---
+# --- Bloco 2: Função de Envio de E-mail (O "Motor") ---
 def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
     try:
         sender_email = st.secrets["SENDER_EMAIL"]
@@ -52,12 +52,26 @@ if not params:
     st.header("⚙️ Modo de Configuração do Portal")
     st.info("Use esta área para criar um link de upload personalizado para cada cliente.")
 
+    # Lista MESTRA atualizada com todos os seus documentos.
     MASTER_LISTA_DOCUMENTOS = [
-        'Matrícula do terreno ou IPTU mais recente', 'Contrato Social', 'Certificado do IBAMA',
-        'Procuração Assinada', 'Documentação EPP assinada', 'Certidão Simplificada da JUSCESP',
-        'Layout', 'Planta do Prédio', 'Cartão CNPJ', 'Certidão de Uso e Ocupação do Solo',
-        'CICAR rural', 'Dados do Proprietário', 'Bombeiros (AVCB)', 'Contas de Agua ou Outorga',
-        'Fluxograma do Processo Produtivo', 'CADRI', 'Laudo Analítico', 'Comprovante de Pagamento (CETESB)',
+        'Matrícula do terreno ou IPTU mais recente',
+        'Contrato Social',
+        'Certificado do IBAMA',
+        'Procuração Assinada',
+        'Documentação EPP assinada',
+        'Certidão Simplificada da JUSCESP',
+        'Layout',
+        'Planta do Prédio',
+        'Cartão CNPJ',
+        'Certidão de Uso e Ocupação do Solo',
+        'CICAR rural',
+        'Dados do Proprietário',
+        'Bombeiros (AVCB)',
+        'Contas de Agua ou Outorga',
+        'Fluxograma do Processo Produtivo',
+        'CADRI',
+        'Laudo Analítico',
+        'Comprovante de Pagamento (CETESB)',
         'Copia CNH Representante Legal'
     ]
     
@@ -67,7 +81,7 @@ if not params:
     st.markdown("#### PASSO 2: Selecione os documentos pendentes")
     documentos_selecionados = st.multiselect(
         "Selecione os documentos que você precisa que este cliente envie:",
-        options=sorted(MASTER_LISTA_DOCUMENTOS)
+        options=sorted(MASTER_LISTA_DOCUMENTOS) # Ordena a lista em ordem alfabética para facilitar
     )
 
     if st.button("🔗 GERAR LINK PARA O CLIENTE"):
@@ -79,12 +93,9 @@ if not params:
             docs_param = ",".join(urllib.parse.quote(doc) for doc in documentos_selecionados)
             cliente_param = urllib.parse.quote(nome_cliente_config)
             
-            # --- INÍCIO DA CORREÇÃO DO LINK ---
-            # ATENÇÃO: Esta é a URL base da sua aplicação.
-            # Eu peguei o nome do seu repositório (lerolero-online). Se for diferente, ajuste aqui.
-            SUA_URL_BASE = "lerolero-online.streamlit.app"
-            url_gerada = f"https://{SUA_URL_BASE}?cliente={cliente_param}&docs={docs_param}"
-            # --- FIM DA CORREÇÃO DO LINK ---
+            # Pega a URL base do Streamlit de forma dinâmica
+            base_url = st.get_option("server.baseUrlPath")
+            url_gerada = f"https://{base_url}?cliente={cliente_param}&docs={docs_param}"
             
             st.success("✅ Link gerado com sucesso! Copie e envie para o seu cliente.")
             st.code(url_gerada)
@@ -109,6 +120,7 @@ else:
         st.error("Link inválido ou nenhum documento foi solicitado.")
     else:
         arquivos_anexados = {}
+        # Ajusta o número de colunas com base na quantidade de documentos
         num_colunas = 3 if len(documentos_necessarios) > 5 else 2
         cols = st.columns(num_colunas)
 
