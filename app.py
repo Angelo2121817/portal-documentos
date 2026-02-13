@@ -16,7 +16,7 @@ st.set_page_config(
 params = st.query_params
 is_cliente = bool(params)
 
-# --- CSS OTIMIZADO (DISTÂNCIA DE ~1 POLEGADA ENTRE LOGO E NOME) ---
+# --- CSS OTIMIZADO (VISUAL APROVADO: ~1 POLEGADA ENTRE LOGO E NOME) ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -30,18 +30,18 @@ st.markdown("""
     .main .block-container {
         background-color: #ffffff !important;
         border-radius: 12px !important;
-        padding: 1rem !important;  /* Reduzido ainda mais */
-        margin-top: 0.3rem !important;  /* Mínimo */
+        padding: 1rem !important;
+        margin-top: 0.3rem !important;
         max-width: 1200px !important;
         border: 1px solid #e2e8f0;
     }
 
-    /* Header - ESPAÇAMENTO DE ~1 POLEGADA (25-30px) */
+    /* Header - ESPAÇAMENTO DE ~1 POLEGADA */
     .header-container {
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin: 5px 0 0px 0;  /* Margens mínimas */
+        margin: 5px 0 0px 0;
         padding-bottom: 0px;
         border-bottom: 1px solid #e2e8f0;
     }
@@ -49,7 +49,7 @@ st.markdown("""
     .header-logo {
         width: 550px;
         max-width: 100%;
-        margin-bottom: -20px;  /* MARGEM NEGATIVA para aproximar ao máximo */
+        margin-bottom: -20px; /* Aproximação visual */
         display: block;
     }
 
@@ -100,7 +100,7 @@ st.markdown("""
         text-align: center;
         color: #94a3b8;
         font-size: 16px;
-        margin: 25px 0 2px 0;  /* ~1 polegada = 25-30px de margem superior */
+        margin: 25px 0 2px 0;
         padding-top: 0px;
     }
     
@@ -133,10 +133,7 @@ st.markdown("""
         padding: 10px 14px !important;
     }
 
-    /* Linha divisória mais próxima */
-    hr {
-        margin: 6px 0 !important;
-    }
+    hr { margin: 6px 0 !important; }
 
 </style>
 """, unsafe_allow_html=True)
@@ -180,6 +177,7 @@ if not is_cliente:
     st.markdown("### ⚙️ Configuração de Link")
     st.info("Painel administrativo para geração de links de upload.")
 
+    # ADICIONADO "Outros (Especificar)" NA LISTA
     MASTER_LISTA_DOCUMENTOS = [
         'Matrícula do terreno ou IPTU mais recente',
         'Contrato Social',
@@ -199,7 +197,8 @@ if not is_cliente:
         'CADRI',
         'Laudo Analítico',
         'Comprovante de Pagamento (CETESB)',
-        'Copia CNH Representante Legal'
+        'Copia CNH Representante Legal',
+        'Outros (Especificar)' # <--- NOVO ITEM
     ]
     
     c1, c2 = st.columns(2)
@@ -208,15 +207,41 @@ if not is_cliente:
     with c2:
         documentos_selecionados = st.multiselect("Selecione os documentos:", options=sorted(MASTER_LISTA_DOCUMENTOS))
 
+    # LÓGICA PARA EDITAR O NOME DE "OUTROS"
+    nome_outros = ""
+    if 'Outros (Especificar)' in documentos_selecionados:
+        st.markdown("---")
+        st.warning("✏️ Você selecionou 'Outros'. Digite abaixo o nome do documento:")
+        nome_outros = st.text_input("Nome do documento personalizado:", placeholder="Ex: Laudo de Ruído 2024")
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
     if st.button("🔗 GERAR LINK"):
-        if not nome_cliente_config or not documentos_selecionados:
-            st.error("Preencha todos os campos.")
+        # Validação: Se selecionou Outros, tem que digitar o nome
+        if 'Outros (Especificar)' in documentos_selecionados and not nome_outros:
+            st.error("⚠️ Por favor, digite o nome para o documento 'Outros'.")
+        elif not nome_cliente_config:
+            st.error("⚠️ Por favor, digite o nome do cliente.")
+        elif not documentos_selecionados:
+            st.error("⚠️ Por favor, selecione pelo menos um documento.")
         else:
-            docs_param = ",".join(urllib.parse.quote(d) for d in documentos_selecionados)
+            # Substitui "Outros (Especificar)" pelo nome digitado na lista final
+            lista_final = []
+            for doc in documentos_selecionados:
+                if doc == 'Outros (Especificar)':
+                    lista_final.append(nome_outros) # Usa o nome personalizado
+                else:
+                    lista_final.append(doc)
+
+            docs_param = ",".join(urllib.parse.quote(d) for d in lista_final)
             cliente_param = urllib.parse.quote(nome_cliente_config)
-            url = f"https://app-documentos-7l5ecrvyv7lhjl3ska9e3t.streamlit.app?cliente={cliente_param}&docs={docs_param}"
-            st.success("Link gerado com sucesso!")
-            st.code(url)
+            
+            # URL BASE (Substitua se necessário)
+            URL_BASE_DA_SUA_APP = "app-documentos-7l5ecrvyv7lhjl3ska9e3t.streamlit.app"
+            url_gerada = f"https://{URL_BASE_DA_SUA_APP}?cliente={cliente_param}&docs={docs_param}"
+            
+            st.success("✅ Link gerado com sucesso!")
+            st.code(url_gerada)
 
 # MODO CLIENTE
 else:
