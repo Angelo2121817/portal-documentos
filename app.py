@@ -14,7 +14,7 @@ st.set_page_config(
 
 # Verificar se é modo cliente (tem parâmetros na URL)
 params = st.query_params
-is_cliente = bool(params)  # True se tiver cliente/docs na URL
+is_cliente = bool(params)
 
 # --- CSS MINIMALISTA & PROFISSIONAL (TEMA SUAVE) ---
 # Define margem diferente: Admin (topo) vs Cliente (descido 8cm)
@@ -56,9 +56,9 @@ st.markdown(f"""
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        margin-top: {margin_top}; /* <--- 300px para cliente, 40px para admin */
-        margin-bottom: 50px;
-        padding-bottom: 20px;
+        margin-top: {margin_top};
+        margin-bottom: 20px; /* <--- REDUZIDO para aproximar do conteúdo */
+        padding-bottom: 15px; /* <--- REDUZIDO */
         border-bottom: 1px solid #e2e8f0;
     }}
     
@@ -67,7 +67,7 @@ st.markdown(f"""
         height: auto;
         width: 550px; 
         max-width: 100%; 
-        margin-bottom: 10px;
+        margin-bottom: 0px; /* <--- REMOVIDO margem inferior extra */
         filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
     }}
 
@@ -154,6 +154,12 @@ st.markdown(f"""
     .footer-links a:hover {{
         color: #334155;
         text-decoration: underline;
+    }}
+
+    /* Título do cliente mais próximo do header */
+    .cliente-titulo {{
+        margin-top: 10px !important; /* <--- REDUZIDO para subir o nome */
+        margin-bottom: 5px !important;
     }}
 
 </style>
@@ -255,14 +261,15 @@ if not is_cliente:
             st.success("✅ Link gerado com sucesso!")
             st.code(url_gerada)
 
-# MODO 2: CLIENTE (com parâmetros na URL - logo já desce 8cm automaticamente)
+# MODO 2: CLIENTE (com parâmetros na URL)
 else:
     nome_cliente = urllib.parse.unquote(params.get("cliente", "Não identificado"))
     docs_string = urllib.parse.unquote(params.get("docs", ""))
     documentos_necessarios = docs_string.split(',') if docs_string else []
 
-    st.markdown(f"<h3 style='text-align: center; color: #94a3b8; font-weight: 400; font-size: 1.1rem;'>Portal de Envio de Documentos</h3>", unsafe_allow_html=True)
-    st.markdown(f"<h2 style='text-align: center; color: #334155; margin-top: -5px; font-size: 2.2rem;'>{nome_cliente}</h2>", unsafe_allow_html=True)
+    # Títulos mais compactos e próximos da logo
+    st.markdown(f"<p style='text-align: center; color: #94a3b8; font-weight: 400; font-size: 1rem; margin: 5px 0 0 0;'>Portal de Envio de Documentos</p>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='text-align: center; color: #334155; margin: 0 0 10px 0; font-size: 2rem;'>{nome_cliente}</h2>", unsafe_allow_html=True)
     st.markdown("---")
     
     if not documentos_necessarios:
