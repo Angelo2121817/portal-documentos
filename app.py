@@ -36,20 +36,20 @@ st.markdown("""
         border: 1px solid #e2e8f0;
     }
 
-    /* Header - LOGO E NOME NO TAMANHO ORIGINAL */
+    /* Header - LOGO E NOME PRÓXIMOS */
     .header-container {
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin: 20px 0 20px 0;
-        padding-bottom: 15px;
+        margin: 20px 0 5px 0;  /* Reduzido margin-bottom */
+        padding-bottom: 5px;    /* Reduzido padding-bottom */
         border-bottom: 1px solid #e2e8f0;
     }
     
     .header-logo {
-        width: 550px;  /* TAMANHO ORIGINAL */
+        width: 550px;
         max-width: 100%;
-        margin-bottom: 10px;
+        margin-bottom: 0px;  /* REMOVIDO espaço abaixo da logo */
     }
 
     /* Cards compactos */
@@ -73,12 +73,12 @@ st.markdown("""
         background: #64748b !important;
         color: #fff !important;
         border: none !important;
-        padding: 8px 16px !important;  /* Reduzido */
-        font-size: 13px !important;     /* Reduzido */
+        padding: 8px 16px !important;
+        font-size: 13px !important;
         font-weight: 600 !important;
         border-radius: 6px !important;
         width: 100%;
-        min-height: 36px !important;    /* Altura mínima menor */
+        min-height: 36px !important;
     }
     
     .stButton > button:hover {
@@ -94,20 +94,20 @@ st.markdown("""
         font-size: 12px !important;
     }
 
-    /* Títulos - NOME DA EMPRESA NO TAMANHO ORIGINAL */
+    /* Títulos - PRÓXIMOS DA LOGO */
     .cliente-subtitulo {
         text-align: center;
         color: #94a3b8;
-        font-size: 16px;  /* Tamanho original */
-        margin: 0 0 5px 0;
+        font-size: 16px;
+        margin: 5px 0 2px 0;  /* Margem superior reduzida */
     }
     
     .cliente-nome {
         text-align: center;
         color: #334155;
-        font-size: 32px;  /* TAMANHO ORIGINAL */
+        font-size: 32px;
         font-weight: 700;
-        margin: 0 0 15px 0;
+        margin: 0 0 10px 0;  /* Margem superior zerada */
     }
 
     /* Rodapé */
