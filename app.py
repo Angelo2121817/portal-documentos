@@ -43,14 +43,14 @@ st.markdown("""
         font-weight: 700 !important;
     }
     
-    /* Header Unificado - BAIXADO 8CM (aprox 250px de margem) */
+    /* Header Unificado - BAIXADO AINDA MAIS (aprox 350px/9-10cm) */
     .header-container {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        margin-top: 250px; /* <--- AQUI ESTÁ O ESPAÇAMENTO DO TOPO (8CM) */
-        margin-bottom: 40px;
+        margin-top: 350px; /* <--- AUMENTADO PARA DESCER BEM A LOGO */
+        margin-bottom: 50px;
         padding-bottom: 20px;
         border-bottom: 1px solid #e2e8f0;
     }
@@ -186,7 +186,7 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
 params = st.query_params
 LOGO_URL = "https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png"
 
-# --- HEADER SÓ COM LOGO (Posicionada mais abaixo) ---
+# --- HEADER SÓ COM LOGO (Posicionada BEM ABAIXO) ---
 st.markdown(f"""
     <div class="header-container">
         <img src="{LOGO_URL}" class="header-logo">
