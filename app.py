@@ -16,7 +16,7 @@ st.set_page_config(
 params = st.query_params
 is_cliente = bool(params)
 
-# --- CSS OTIMIZADO (ESPAÇAMENTOS MÍNIMOS ENTRE LOGO E NOME) ---
+# --- CSS OTIMIZADO (DISTÂNCIA DE ~1 POLEGADA ENTRE LOGO E NOME) ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -30,26 +30,27 @@ st.markdown("""
     .main .block-container {
         background-color: #ffffff !important;
         border-radius: 12px !important;
-        padding: 1.5rem !important;  /* Reduzido de 2rem */
-        margin-top: 0.5rem !important;  /* Reduzido de 1rem */
+        padding: 1rem !important;  /* Reduzido ainda mais */
+        margin-top: 0.3rem !important;  /* Mínimo */
         max-width: 1200px !important;
         border: 1px solid #e2e8f0;
     }
 
-    /* Header - LOGO E NOME BEM PRÓXIMOS */
+    /* Header - ESPAÇAMENTO DE ~1 POLEGADA (25-30px) */
     .header-container {
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin: 10px 0 0px 0;  /* Margens mínimas */
-        padding-bottom: 0px;    /* Sem padding inferior */
+        margin: 5px 0 0px 0;  /* Margens mínimas */
+        padding-bottom: 0px;
         border-bottom: 1px solid #e2e8f0;
     }
     
     .header-logo {
         width: 550px;
         max-width: 100%;
-        margin-bottom: -10px;  /* MARGEM NEGATIVA para sobrepor e aproximar */
+        margin-bottom: -20px;  /* MARGEM NEGATIVA para aproximar ao máximo */
+        display: block;
     }
 
     /* Cards compactos */
@@ -94,12 +95,12 @@ st.markdown("""
         font-size: 12px !important;
     }
 
-    /* Títulos - COLADOS NA LOGO */
+    /* Títulos - DISTÂNCIA DE ~1 POLEGADA DA LOGO */
     .cliente-subtitulo {
         text-align: center;
         color: #94a3b8;
         font-size: 16px;
-        margin: 0px 0 2px 0;  /* Sem margem superior */
+        margin: 25px 0 2px 0;  /* ~1 polegada = 25-30px de margem superior */
         padding-top: 0px;
     }
     
@@ -108,7 +109,7 @@ st.markdown("""
         color: #334155;
         font-size: 32px;
         font-weight: 700;
-        margin: 0 0 8px 0;  /* Margem mínima inferior */
+        margin: 0 0 6px 0;
     }
 
     /* Rodapé */
@@ -134,7 +135,7 @@ st.markdown("""
 
     /* Linha divisória mais próxima */
     hr {
-        margin: 8px 0 !important;
+        margin: 6px 0 !important;
     }
 
 </style>
