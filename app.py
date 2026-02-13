@@ -17,8 +17,8 @@ params = st.query_params
 is_cliente = bool(params)
 
 # --- CSS MINIMALISTA & PROFISSIONAL (TEMA SUAVE) ---
-# Define margem diferente: Admin (topo) vs Cliente (descido 8cm)
-margin_top = "300px" if is_cliente else "40px"
+# Define margem diferente: Admin (topo) vs Cliente (topo também, sem descida)
+margin_top = "20px" if is_cliente else "40px"
 
 st.markdown(f"""
 <style>
@@ -37,8 +37,8 @@ st.markdown(f"""
     .main .block-container {{
         background-color: #ffffff !important;
         border-radius: 12px !important;
-        padding: 3rem !important;
-        margin-top: 2rem !important;
+        padding: 2rem !important;  /* Reduzido de 3rem para 2rem */
+        margin-top: 1rem !important;  /* Reduzido de 2rem para 1rem */
         box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important;
         max-width: 1200px !important;
         border: 1px solid #e2e8f0;
@@ -50,24 +50,24 @@ st.markdown(f"""
         font-weight: 700 !important;
     }}
     
-    /* Header Unificado - MARGEM DINÂMICA */
+    /* Header Unificado - MARGEM MÍNIMA (TOPO DA PÁGINA) */
     .header-container {{
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        margin-top: {margin_top};
-        margin-bottom: 20px; /* <--- REDUZIDO para aproximar do conteúdo */
-        padding-bottom: 15px; /* <--- REDUZIDO */
+        margin-top: {margin_top};  /* <--- 20px para cliente (topo), 40px para admin */
+        margin-bottom: 15px;
+        padding-bottom: 10px;
         border-bottom: 1px solid #e2e8f0;
     }}
     
-    /* LOGO GIGANTE E CENTRALIZADA */
+    /* LOGO - TAMANHO REDUZIDO PARA CABER MELHOR NO TOPO */
     .header-logo {{
         height: auto;
-        width: 550px; 
+        width: 400px;  /* <--- REDUZIDO de 550px para 400px */
         max-width: 100%; 
-        margin-bottom: 0px; /* <--- REMOVIDO margem inferior extra */
+        margin-bottom: 0px;
         filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
     }}
 
@@ -77,8 +77,8 @@ st.markdown(f"""
         border: 1px solid #e2e8f0;
         border-left: 5px solid #94a3b8;
         border-radius: 8px;
-        padding: 1.2rem;
-        margin-bottom: 1rem;
+        padding: 1rem;  /* Reduzido de 1.2rem */
+        margin-bottom: 0.8rem;  /* Reduzido de 1rem */
         transition: all 0.2s ease;
     }}
     
@@ -91,7 +91,7 @@ st.markdown(f"""
     .doc-title {{
         font-weight: 700;
         color: #334155;
-        font-size: 1.1rem;
+        font-size: 1rem;  /* Reduzido de 1.1rem */
         display: block;
     }}
 
@@ -100,8 +100,8 @@ st.markdown(f"""
         background-color: #64748b !important;
         color: #ffffff !important;
         border: none !important;
-        padding: 1rem 2rem !important;
-        font-size: 1.1rem !important;
+        padding: 0.8rem 1.5rem !important;  /* Reduzido */
+        font-size: 1rem !important;
         font-weight: 600 !important;
         border-radius: 8px !important;
         transition: all 0.2s ease !important;
@@ -127,8 +127,8 @@ st.markdown(f"""
 
     /* Rodapé Limpo */
     .footer-container {{
-        margin-top: 60px;
-        padding-top: 30px;
+        margin-top: 40px;  /* Reduzido de 60px */
+        padding-top: 20px;  /* Reduzido de 30px */
         border-top: 1px solid #e2e8f0;
         text-align: center;
         background-color: transparent;
@@ -136,7 +136,7 @@ st.markdown(f"""
     
     .footer-text {{
         color: #94a3b8;
-        font-size: 0.95rem;
+        font-size: 0.9rem;  /* Reduzido de 0.95rem */
         margin-bottom: 8px;
     }}
     
@@ -145,7 +145,7 @@ st.markdown(f"""
         text-decoration: none;
         font-weight: 600;
         margin: 0 15px;
-        font-size: 1rem;
+        font-size: 0.95rem;  /* Reduzido de 1rem */
         transition: color 0.2s;
         display: inline-block;
         padding: 5px;
@@ -154,12 +154,6 @@ st.markdown(f"""
     .footer-links a:hover {{
         color: #334155;
         text-decoration: underline;
-    }}
-
-    /* Título do cliente mais próximo do header */
-    .cliente-titulo {{
-        margin-top: 10px !important; /* <--- REDUZIDO para subir o nome */
-        margin-bottom: 5px !important;
     }}
 
 </style>
@@ -261,15 +255,15 @@ if not is_cliente:
             st.success("✅ Link gerado com sucesso!")
             st.code(url_gerada)
 
-# MODO 2: CLIENTE (com parâmetros na URL)
+# MODO 2: CLIENTE (TOPO DA PÁGINA - SEM ESPAÇAMENTO EXCESSIVO)
 else:
     nome_cliente = urllib.parse.unquote(params.get("cliente", "Não identificado"))
     docs_string = urllib.parse.unquote(params.get("docs", ""))
     documentos_necessarios = docs_string.split(',') if docs_string else []
 
-    # Títulos mais compactos e próximos da logo
-    st.markdown(f"<p style='text-align: center; color: #94a3b8; font-weight: 400; font-size: 1rem; margin: 5px 0 0 0;'>Portal de Envio de Documentos</p>", unsafe_allow_html=True)
-    st.markdown(f"<h2 style='text-align: center; color: #334155; margin: 0 0 10px 0; font-size: 2rem;'>{nome_cliente}</h2>", unsafe_allow_html=True)
+    # Títulos compactos no topo
+    st.markdown(f"<p style='text-align: center; color: #94a3b8; font-weight: 400; font-size: 0.95rem; margin: 0 0 2px 0;'>Portal de Envio de Documentos</p>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='text-align: center; color: #334155; margin: 0 0 15px 0; font-size: 1.8rem;'>{nome_cliente}</h2>", unsafe_allow_html=True)
     st.markdown("---")
     
     if not documentos_necessarios:
@@ -295,9 +289,9 @@ else:
                 )
                 if uploaded_file is not None:
                     arquivos_anexados[documento] = uploaded_file
-                    st.markdown("<div style='text-align: center; margin-top: 5px;'><span style='color: #10b981; font-size: 0.9rem; font-weight: 700; background-color: #ecfdf5; padding: 4px 8px; border-radius: 4px;'>✓ Arquivo Pronto</span></div>", unsafe_allow_html=True)
+                    st.markdown("<div style='text-align: center; margin-top: 3px;'><span style='color: #10b981; font-size: 0.85rem; font-weight: 700; background-color: #ecfdf5; padding: 3px 6px; border-radius: 4px;'>✓ Pronto</span></div>", unsafe_allow_html=True)
 
-        st.markdown("<br><br>", unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
 
         col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
         with col_btn2:
@@ -331,6 +325,6 @@ st.markdown("""
     </div>
     <br>
     <p class="footer-text">Soluções Ambientais e Regularizações</p>
-    <p class="footer-text" style="font-size: 0.8rem; color: #cbd5e1;">© 2026 Todos os direitos reservados.</p>
+    <p class="footer-text" style="font-size: 0.75rem; color: #cbd5e1;">© 2026 Todos os direitos reservados.</p>
 </div>
 """, unsafe_allow_html=True)
