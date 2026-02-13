@@ -16,7 +16,7 @@ st.set_page_config(
 params = st.query_params
 is_cliente = bool(params)
 
-# --- CSS OTIMIZADO (BOTÕES COMPACTOS, LOGO E NOME ORIGINAIS) ---
+# --- CSS OTIMIZADO (ESPAÇAMENTOS MÍNIMOS ENTRE LOGO E NOME) ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -30,26 +30,26 @@ st.markdown("""
     .main .block-container {
         background-color: #ffffff !important;
         border-radius: 12px !important;
-        padding: 2rem !important;
-        margin-top: 1rem !important;
+        padding: 1.5rem !important;  /* Reduzido de 2rem */
+        margin-top: 0.5rem !important;  /* Reduzido de 1rem */
         max-width: 1200px !important;
         border: 1px solid #e2e8f0;
     }
 
-    /* Header - LOGO E NOME PRÓXIMOS */
+    /* Header - LOGO E NOME BEM PRÓXIMOS */
     .header-container {
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin: 20px 0 5px 0;  /* Reduzido margin-bottom */
-        padding-bottom: 5px;    /* Reduzido padding-bottom */
+        margin: 10px 0 0px 0;  /* Margens mínimas */
+        padding-bottom: 0px;    /* Sem padding inferior */
         border-bottom: 1px solid #e2e8f0;
     }
     
     .header-logo {
         width: 550px;
         max-width: 100%;
-        margin-bottom: 0px;  /* REMOVIDO espaço abaixo da logo */
+        margin-bottom: -10px;  /* MARGEM NEGATIVA para sobrepor e aproximar */
     }
 
     /* Cards compactos */
@@ -94,12 +94,13 @@ st.markdown("""
         font-size: 12px !important;
     }
 
-    /* Títulos - PRÓXIMOS DA LOGO */
+    /* Títulos - COLADOS NA LOGO */
     .cliente-subtitulo {
         text-align: center;
         color: #94a3b8;
         font-size: 16px;
-        margin: 5px 0 2px 0;  /* Margem superior reduzida */
+        margin: 0px 0 2px 0;  /* Sem margem superior */
+        padding-top: 0px;
     }
     
     .cliente-nome {
@@ -107,7 +108,7 @@ st.markdown("""
         color: #334155;
         font-size: 32px;
         font-weight: 700;
-        margin: 0 0 10px 0;  /* Margem superior zerada */
+        margin: 0 0 8px 0;  /* Margem mínima inferior */
     }
 
     /* Rodapé */
@@ -129,6 +130,11 @@ st.markdown("""
     /* Alerts e info compactos */
     .stAlert {
         padding: 10px 14px !important;
+    }
+
+    /* Linha divisória mais próxima */
+    hr {
+        margin: 8px 0 !important;
     }
 
 </style>
