@@ -12,22 +12,29 @@ st.set_page_config(
     layout="wide"
 )
 
+# Verificar se é modo cliente (tem parâmetros na URL)
+params = st.query_params
+is_cliente = bool(params)  # True se tiver cliente/docs na URL
+
 # --- CSS MINIMALISTA & PROFISSIONAL (TEMA SUAVE) ---
-st.markdown("""
+# Define margem diferente: Admin (topo) vs Cliente (descido 8cm)
+margin_top = "300px" if is_cliente else "40px"
+
+st.markdown(f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
     /* Reset e Fonte Global */
-    * { font-family: 'Inter', sans-serif; color: #334155; }
+    * {{ font-family: 'Inter', sans-serif; color: #334155; }}
 
     /* Fundo da Página: Cinza Claro Suave */
-    [data-testid="stAppViewContainer"] {
+    [data-testid="stAppViewContainer"] {{
         background-color: #f8fafc !important; 
         background-image: none !important;
-    }
+    }}
 
     /* Container Principal: Branco Puro com Sombra Suave */
-    .main .block-container {
+    .main .block-container {{
         background-color: #ffffff !important;
         border-radius: 12px !important;
         padding: 3rem !important;
@@ -35,62 +42,62 @@ st.markdown("""
         box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important;
         max-width: 1200px !important;
         border: 1px solid #e2e8f0;
-    }
+    }}
 
     /* Títulos */
-    h1, h2, h3 {
+    h1, h2, h3 {{
         color: #1e293b !important;
         font-weight: 700 !important;
-    }
+    }}
     
-    /* Header Unificado - BAIXADO AINDA MAIS (aprox 350px/9-10cm) */
-    .header-container {
+    /* Header Unificado - MARGEM DINÂMICA */
+    .header-container {{
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        margin-top: 350px; /* <--- AUMENTADO PARA DESCER BEM A LOGO */
+        margin-top: {margin_top}; /* <--- 300px para cliente, 40px para admin */
         margin-bottom: 50px;
         padding-bottom: 20px;
         border-bottom: 1px solid #e2e8f0;
-    }
+    }}
     
     /* LOGO GIGANTE E CENTRALIZADA */
-    .header-logo {
+    .header-logo {{
         height: auto;
         width: 550px; 
         max-width: 100%; 
         margin-bottom: 10px;
         filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
-    }
+    }}
 
     /* Cards de Documentos - Estilo "Clean" */
-    .doc-card {
+    .doc-card {{
         background-color: #ffffff;
         border: 1px solid #e2e8f0;
-        border-left: 5px solid #94a3b8; /* Cinza Suave no detalhe */
+        border-left: 5px solid #94a3b8;
         border-radius: 8px;
         padding: 1.2rem;
         margin-bottom: 1rem;
         transition: all 0.2s ease;
-    }
+    }}
     
-    .doc-card:hover {
+    .doc-card:hover {{
         border-color: #cbd5e1;
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         transform: translateY(-2px);
-    }
+    }}
 
-    .doc-title {
+    .doc-title {{
         font-weight: 700;
         color: #334155;
         font-size: 1.1rem;
         display: block;
-    }
+    }}
 
     /* BOTÕES SUAVIZADOS (Cinza Nuvem) */
-    .stButton > button {
-        background-color: #64748b !important; /* COR SUAVIZADA (Cinza Azulado Médio) */
+    .stButton > button {{
+        background-color: #64748b !important;
         color: #ffffff !important;
         border: none !important;
         padding: 1rem 2rem !important;
@@ -100,41 +107,41 @@ st.markdown("""
         transition: all 0.2s ease !important;
         width: 100%;
         letter-spacing: 0.5px;
-    }
+    }}
     
-    .stButton > button:hover {
-        background-color: #475569 !important; /* Escurece levemente no hover */
+    .stButton > button:hover {{
+        background-color: #475569 !important;
         box-shadow: 0 6px 15px rgba(0,0,0,0.10) !important;
         transform: translateY(-2px);
         color: #ffffff !important;
-    }
+    }}
 
     /* Inputs */
-    .stTextInput > div > div > input, .stMultiSelect > div > div > div {
+    .stTextInput > div > div > input, .stMultiSelect > div > div > div {{
         background-color: #f8fafc;
         border: 1px solid #cbd5e1;
         color: #334155;
         border-radius: 6px;
         font-size: 1rem;
-    }
+    }}
 
     /* Rodapé Limpo */
-    .footer-container {
+    .footer-container {{
         margin-top: 60px;
         padding-top: 30px;
         border-top: 1px solid #e2e8f0;
         text-align: center;
         background-color: transparent;
-    }
+    }}
     
-    .footer-text {
-        color: #94a3b8; /* Texto do rodapé mais suave */
+    .footer-text {{
+        color: #94a3b8;
         font-size: 0.95rem;
         margin-bottom: 8px;
-    }
+    }}
     
-    .footer-links a {
-        color: #64748b; /* Links suaves */
+    .footer-links a {{
+        color: #64748b;
         text-decoration: none;
         font-weight: 600;
         margin: 0 15px;
@@ -142,12 +149,12 @@ st.markdown("""
         transition: color 0.2s;
         display: inline-block;
         padding: 5px;
-    }
+    }}
     
-    .footer-links a:hover {
+    .footer-links a:hover {{
         color: #334155;
         text-decoration: underline;
-    }
+    }}
 
 </style>
 """, unsafe_allow_html=True)
@@ -183,10 +190,9 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
 
 # --- Bloco 3: Lógica Principal ---
 
-params = st.query_params
 LOGO_URL = "https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png"
 
-# --- HEADER SÓ COM LOGO (Posicionada BEM ABAIXO) ---
+# --- HEADER SÓ COM LOGO ---
 st.markdown(f"""
     <div class="header-container">
         <img src="{LOGO_URL}" class="header-logo">
@@ -194,8 +200,8 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 
-# MODO 1: ADMIN
-if not params:
+# MODO 1: ADMIN (sem parâmetros)
+if not is_cliente:
     st.markdown("### ⚙️ Configuração de Link")
     st.info("Painel administrativo para geração de links de upload.")
 
@@ -243,14 +249,13 @@ if not params:
             docs_param = ",".join(urllib.parse.quote(doc) for doc in documentos_selecionados)
             cliente_param = urllib.parse.quote(nome_cliente_config)
             
-            # URL BASE
             URL_BASE_DA_SUA_APP = "app-documentos-7l5ecrvyv7lhjl3ska9e3t.streamlit.app"
             url_gerada = f"https://{URL_BASE_DA_SUA_APP}?cliente={cliente_param}&docs={docs_param}"
             
             st.success("✅ Link gerado com sucesso!")
             st.code(url_gerada)
 
-# MODO 2: CLIENTE
+# MODO 2: CLIENTE (com parâmetros na URL - logo já desce 8cm automaticamente)
 else:
     nome_cliente = urllib.parse.unquote(params.get("cliente", "Não identificado"))
     docs_string = urllib.parse.unquote(params.get("docs", ""))
@@ -264,13 +269,11 @@ else:
         st.error("Link inválido ou expirado.")
     else:
         arquivos_anexados = {}
-        # Layout responsivo
         num_colunas = 3 if len(documentos_necessarios) > 4 else 2
         cols = st.columns(num_colunas)
 
         for i, documento in enumerate(documentos_necessarios):
             with cols[i % num_colunas]:
-                # Card HTML Clean
                 st.markdown(f"""
                 <div class="doc-card">
                     <span class="doc-title">{documento}</span>
@@ -310,7 +313,7 @@ else:
                             st.balloons()
                             st.success(f"Sucesso! {sucessos} documento(s) foram enviados.")
                         else:
-                            st.error(f"Erro ao enviar: {', '.join(erros)}.")
+                            st.error(f"Erro ao enviar: {', '.join(erros)}")
 
 # --- RODAPÉ CLEAN E SUAVE ---
 st.markdown("""
