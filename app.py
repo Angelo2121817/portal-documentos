@@ -12,154 +12,139 @@ st.set_page_config(
     layout="wide"
 )
 
-# Verificar se é modo cliente (tem parâmetros na URL)
+# Verificar se é modo cliente
 params = st.query_params
 is_cliente = bool(params)
 
-# --- CSS MINIMALISTA & PROFISSIONAL (TEMA SUAVE) ---
-# Define margem diferente: Admin (topo) vs Cliente (topo também, sem descida)
-margin_top = "20px" if is_cliente else "40px"
-
-st.markdown(f"""
+# --- CSS COMPACTO E OTIMIZADO ---
+st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
-    /* Reset e Fonte Global */
-    * {{ font-family: 'Inter', sans-serif; color: #334155; }}
+    * { font-family: 'Inter', sans-serif; color: #334155; font-size: 14px; }
 
-    /* Fundo da Página: Cinza Claro Suave */
-    [data-testid="stAppViewContainer"] {{
-        background-color: #f8fafc !important; 
-        background-image: none !important;
-    }}
+    [data-testid="stAppViewContainer"] {
+        background-color: #f8fafc !important;
+    }
 
-    /* Container Principal: Branco Puro com Sombra Suave */
-    .main .block-container {{
+    .main .block-container {
         background-color: #ffffff !important;
-        border-radius: 12px !important;
-        padding: 2rem !important;  /* Reduzido de 3rem para 2rem */
-        margin-top: 1rem !important;  /* Reduzido de 2rem para 1rem */
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important;
+        border-radius: 8px !important;
+        padding: 1rem !important;
+        margin-top: 0.5rem !important;
         max-width: 1200px !important;
         border: 1px solid #e2e8f0;
-    }}
+    }
 
-    /* Títulos */
-    h1, h2, h3 {{
-        color: #1e293b !important;
-        font-weight: 700 !important;
-    }}
-    
-    /* Header Unificado - MARGEM MÍNIMA (TOPO DA PÁGINA) */
-    .header-container {{
+    /* Header compacto */
+    .header-container {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        margin-top: {margin_top};  /* <--- 20px para cliente (topo), 40px para admin */
-        margin-bottom: 15px;
-        padding-bottom: 10px;
+        margin: 10px 0 10px 0;
+        padding-bottom: 8px;
         border-bottom: 1px solid #e2e8f0;
-    }}
+    }
     
-    /* LOGO - TAMANHO REDUZIDO PARA CABER MELHOR NO TOPO */
-    .header-logo {{
-        height: auto;
-        width: 400px;  /* <--- REDUZIDO de 550px para 400px */
-        max-width: 100%; 
-        margin-bottom: 0px;
-        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
-    }}
+    .header-logo {
+        width: 280px;
+        max-width: 90%;
+    }
 
-    /* Cards de Documentos - Estilo "Clean" */
-    .doc-card {{
-        background-color: #ffffff;
+    /* Cards super compactos */
+    .doc-card {
+        background: #fff;
         border: 1px solid #e2e8f0;
-        border-left: 5px solid #94a3b8;
-        border-radius: 8px;
-        padding: 1rem;  /* Reduzido de 1.2rem */
-        margin-bottom: 0.8rem;  /* Reduzido de 1rem */
-        transition: all 0.2s ease;
-    }}
-    
-    .doc-card:hover {{
-        border-color: #cbd5e1;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        transform: translateY(-2px);
-    }}
-
-    .doc-title {{
-        font-weight: 700;
-        color: #334155;
-        font-size: 1rem;  /* Reduzido de 1.1rem */
-        display: block;
-    }}
-
-    /* BOTÕES SUAVIZADOS (Cinza Nuvem) */
-    .stButton > button {{
-        background-color: #64748b !important;
-        color: #ffffff !important;
-        border: none !important;
-        padding: 0.8rem 1.5rem !important;  /* Reduzido */
-        font-size: 1rem !important;
-        font-weight: 600 !important;
-        border-radius: 8px !important;
-        transition: all 0.2s ease !important;
-        width: 100%;
-        letter-spacing: 0.5px;
-    }}
-    
-    .stButton > button:hover {{
-        background-color: #475569 !important;
-        box-shadow: 0 6px 15px rgba(0,0,0,0.10) !important;
-        transform: translateY(-2px);
-        color: #ffffff !important;
-    }}
-
-    /* Inputs */
-    .stTextInput > div > div > input, .stMultiSelect > div > div > div {{
-        background-color: #f8fafc;
-        border: 1px solid #cbd5e1;
-        color: #334155;
+        border-left: 3px solid #64748b;
         border-radius: 6px;
-        font-size: 1rem;
-    }}
+        padding: 8px 10px;
+        margin-bottom: 6px;
+    }
 
-    /* Rodapé Limpo */
-    .footer-container {{
-        margin-top: 40px;  /* Reduzido de 60px */
-        padding-top: 20px;  /* Reduzido de 30px */
+    .doc-title {
+        font-weight: 600;
+        color: #334155;
+        font-size: 13px;
+    }
+
+    /* Botões compactos */
+    .stButton > button {
+        background: #64748b !important;
+        color: #fff !important;
+        border: none !important;
+        padding: 10px 16px !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        border-radius: 6px !important;
+        width: 100%;
+    }
+    
+    .stButton > button:hover {
+        background: #475569 !important;
+    }
+
+    /* File uploader compacto */
+    .stFileUploader > div > div {
+        padding: 4px !important;
+    }
+    
+    .stFileUploader small {
+        font-size: 11px !important;
+    }
+
+    /* Títulos compactos */
+    h1 { font-size: 18px !important; }
+    h2 { font-size: 16px !important; }
+    h3 { font-size: 14px !important; }
+
+    /* Rodapé compacto */
+    .footer-container {
+        margin-top: 20px;
+        padding-top: 12px;
         border-top: 1px solid #e2e8f0;
         text-align: center;
-        background-color: transparent;
-    }}
+        font-size: 12px;
+    }
     
-    .footer-text {{
-        color: #94a3b8;
-        font-size: 0.9rem;  /* Reduzido de 0.95rem */
-        margin-bottom: 8px;
-    }}
-    
-    .footer-links a {{
+    .footer-links a {
         color: #64748b;
         text-decoration: none;
         font-weight: 600;
-        margin: 0 15px;
-        font-size: 0.95rem;  /* Reduzido de 1rem */
-        transition: color 0.2s;
-        display: inline-block;
-        padding: 5px;
-    }}
+        margin: 0 10px;
+        font-size: 12px;
+    }
+
+    /* Info e alerts compactos */
+    .stAlert {
+        padding: 8px 12px !important;
+        font-size: 12px !important;
+    }
     
-    .footer-links a:hover {{
-        color: #334155;
-        text-decoration: underline;
-    }}
+    .stAlert > div {
+        gap: 8px !important;
+    }
+
+    /* Multiselect compacto */
+    .stMultiSelect > div > div {
+        min-height: 36px !important;
+    }
+
+    /* Inputs compactos */
+    .stTextInput > div > div > input {
+        padding: 6px 10px !important;
+        font-size: 13px !important;
+    }
+
+    /* Sucesso/erro compacto */
+    .stSuccess, .stError, .stWarning {
+        padding: 8px 12px !important;
+        font-size: 12px !important;
+    }
 
 </style>
 """, unsafe_allow_html=True)
 
-# --- Bloco 2: Função de Envio de E-mail (Mantida Intacta) ---
+# --- Bloco 2: Função de Envio ---
 def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
     try:
         sender_email = st.secrets["SENDER_EMAIL"]
@@ -169,9 +154,9 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
         msg = MIMEMultipart()
         msg['From'] = sender_email
         msg['To'] = recipient_email
-        msg['Subject'] = f"Novo Documento Recebido: {nome_documento}"
+        msg['Subject'] = f"Doc: {nome_documento}"
 
-        corpo = f"Olá Angelo,\n\nUm novo documento foi enviado através do portal.\n\nTipo de Documento: {nome_documento}\nNome Original do Arquivo: {nome_arquivo_original}\n\nO arquivo está em anexo."
+        corpo = f"Olá Angelo,\n\nDocumento recebido: {nome_documento}\nArquivo: {nome_arquivo_original}"
         msg.attach(MIMEText(corpo, 'plain'))
 
         anexo = MIMEApplication(conteudo_arquivo, Name=nome_arquivo_original)
@@ -185,146 +170,106 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
         
         return True
     except Exception as e:
-        print(f"Erro no envio de e-mail: {e}")
+        print(f"Erro: {e}")
         return False
 
 # --- Bloco 3: Lógica Principal ---
-
 LOGO_URL = "https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png"
 
-# --- HEADER SÓ COM LOGO ---
-st.markdown(f"""
-    <div class="header-container">
-        <img src="{LOGO_URL}" class="header-logo">
-    </div>
-""", unsafe_allow_html=True)
+st.markdown(f'<div class="header-container"><img src="{LOGO_URL}" class="header-logo"></div>', unsafe_allow_html=True)
 
-
-# MODO 1: ADMIN (sem parâmetros)
+# MODO ADMIN
 if not is_cliente:
-    st.markdown("### ⚙️ Configuração de Link")
-    st.info("Painel administrativo para geração de links de upload.")
+    st.markdown("#### ⚙️ Gerar Link")
+    st.info("Crie links personalizados para seus clientes.")
 
     MASTER_LISTA_DOCUMENTOS = [
-        'Matrícula do terreno ou IPTU mais recente',
+        'Matrícula do terreno ou IPTU',
         'Contrato Social',
         'Certificado do IBAMA',
         'Procuração Assinada',
-        'Documentação EPP assinada',
-        'Certidão Simplificada da JUSCESP',
+        'Documentação EPP',
+        'Certidão JUSCESP',
         'Layout',
         'Planta do Prédio',
         'Cartão CNPJ',
-        'Certidão de Uso e Ocupação do Solo',
+        'Certidão Uso do Solo',
         'CICAR rural',
         'Dados do Proprietário',
         'Bombeiros (AVCB)',
-        'Contas de Agua ou Outorga',
-        'Fluxograma do Processo Produtivo',
+        'Contas de Água/Outorga',
+        'Fluxograma Produtivo',
         'CADRI',
         'Laudo Analítico',
-        'Comprovante de Pagamento (CETESB)',
-        'Copia CNH Representante Legal'
+        'Comprovante CETESB',
+        'CNH Representante Legal'
     ]
     
-    col_admin1, col_admin2 = st.columns(2)
-    
-    with col_admin1:
-        nome_cliente_config = st.text_input("Nome do Cliente / Empresa")
-    
-    with col_admin2:
-        documentos_selecionados = st.multiselect(
-            "Selecione os documentos solicitados:",
-            options=sorted(MASTER_LISTA_DOCUMENTOS)
-        )
-
-    st.markdown("<br>", unsafe_allow_html=True)
+    c1, c2 = st.columns(2)
+    with c1:
+        nome_cliente_config = st.text_input("Cliente", placeholder="Nome da empresa")
+    with c2:
+        documentos_selecionados = st.multiselect("Documentos:", options=sorted(MASTER_LISTA_DOCUMENTOS))
 
     if st.button("🔗 GERAR LINK"):
-        if not nome_cliente_config:
-            st.error("⚠️ Por favor, digite o nome do cliente.")
-        elif not documentos_selecionados:
-            st.error("⚠️ Por favor, selecione pelo menos um documento.")
+        if not nome_cliente_config or not documentos_selecionados:
+            st.error("Preencha todos os campos.")
         else:
-            docs_param = ",".join(urllib.parse.quote(doc) for doc in documentos_selecionados)
+            docs_param = ",".join(urllib.parse.quote(d) for d in documentos_selecionados)
             cliente_param = urllib.parse.quote(nome_cliente_config)
-            
-            URL_BASE_DA_SUA_APP = "app-documentos-7l5ecrvyv7lhjl3ska9e3t.streamlit.app"
-            url_gerada = f"https://{URL_BASE_DA_SUA_APP}?cliente={cliente_param}&docs={docs_param}"
-            
-            st.success("✅ Link gerado com sucesso!")
-            st.code(url_gerada)
+            url = f"https://app-documentos-7l5ecrvyv7lhjl3ska9e3t.streamlit.app?cliente={cliente_param}&docs={docs_param}"
+            st.success("Link gerado!")
+            st.code(url)
 
-# MODO 2: CLIENTE (TOPO DA PÁGINA - SEM ESPAÇAMENTO EXCESSIVO)
+# MODO CLIENTE
 else:
-    nome_cliente = urllib.parse.unquote(params.get("cliente", "Não identificado"))
-    docs_string = urllib.parse.unquote(params.get("docs", ""))
-    documentos_necessarios = docs_string.split(',') if docs_string else []
+    nome_cliente = urllib.parse.unquote(params.get("cliente", "Cliente"))
+    docs = urllib.parse.unquote(params.get("docs", "")).split(',') if params.get("docs") else []
 
-    # Títulos compactos no topo
-    st.markdown(f"<p style='text-align: center; color: #94a3b8; font-weight: 400; font-size: 0.95rem; margin: 0 0 2px 0;'>Portal de Envio de Documentos</p>", unsafe_allow_html=True)
-    st.markdown(f"<h2 style='text-align: center; color: #334155; margin: 0 0 15px 0; font-size: 1.8rem;'>{nome_cliente}</h2>", unsafe_allow_html=True)
+    st.markdown(f"<p style='text-align:center;color:#64748b;font-size:12px;margin:0'>Portal de Documentos</p>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='text-align:center;margin:0 0 10px 0;font-size:20px'>{nome_cliente}</h2>", unsafe_allow_html=True)
     st.markdown("---")
     
-    if not documentos_necessarios:
-        st.error("Link inválido ou expirado.")
+    if not docs:
+        st.error("Link inválido.")
     else:
-        arquivos_anexados = {}
-        num_colunas = 3 if len(documentos_necessarios) > 4 else 2
-        cols = st.columns(num_colunas)
+        arquivos = {}
+        cols = st.columns(3) if len(docs) > 4 else st.columns(2)
 
-        for i, documento in enumerate(documentos_necessarios):
-            with cols[i % num_colunas]:
-                st.markdown(f"""
-                <div class="doc-card">
-                    <span class="doc-title">{documento}</span>
-                </div>
-                """, unsafe_allow_html=True)
+        for i, doc in enumerate(docs):
+            with cols[i % len(cols)]:
+                st.markdown(f'<div class="doc-card"><span class="doc-title">📄 {doc}</span></div>', unsafe_allow_html=True)
                 
-                uploaded_file = st.file_uploader(
-                    f"Selecione o arquivo para {documento}", 
-                    type=['pdf', 'jpg', 'png', 'docx', 'jpeg'],
-                    key=documento,
-                    label_visibility="collapsed"
-                )
-                if uploaded_file is not None:
-                    arquivos_anexados[documento] = uploaded_file
-                    st.markdown("<div style='text-align: center; margin-top: 3px;'><span style='color: #10b981; font-size: 0.85rem; font-weight: 700; background-color: #ecfdf5; padding: 3px 6px; border-radius: 4px;'>✓ Pronto</span></div>", unsafe_allow_html=True)
+                up = st.file_uploader(f"Arquivo {i}", type=['pdf','jpg','png','docx','jpeg'], key=doc, label_visibility="collapsed")
+                if up:
+                    arquivos[doc] = up
+                    st.markdown("<p style='color:#10b981;font-size:11px;margin:2px 0;text-align:center'>✓ OK</p>", unsafe_allow_html=True)
 
-        st.markdown("<br>", unsafe_allow_html=True)
-
-        col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
-        with col_btn2:
-            if st.button('ENVIAR DOCUMENTOS'):
-                if not arquivos_anexados:
-                    st.warning("⚠️ Nenhum documento foi anexado ainda.")
-                else:
+        if arquivos:
+            c1, c2, c3 = st.columns([1,2,1])
+            with c2:
+                if st.button('📤 ENVIAR'):
                     with st.spinner("Enviando..."):
-                        erros = []
-                        sucessos = 0
-                        for doc, arquivo in arquivos_anexados.items():
-                            file_content = arquivo.getvalue()
-                            sucesso = enviar_email_com_anexo(f"{doc} ({nome_cliente})", file_content, arquivo.name)
-                            if sucesso:
-                                sucessos += 1
+                        erros, ok = [], 0
+                        for d, a in arquivos.items():
+                            if enviar_email_com_anexo(f"{d} ({nome_cliente})", a.getvalue(), a.name):
+                                ok += 1
                             else:
-                                erros.append(doc)
+                                erros.append(d)
                         
                         if not erros:
                             st.balloons()
-                            st.success(f"Sucesso! {sucessos} documento(s) foram enviados.")
+                            st.success(f"{ok} documento(s) enviados!")
                         else:
-                            st.error(f"Erro ao enviar: {', '.join(erros)}")
+                            st.error(f"Erro: {', '.join(erros)}")
 
-# --- RODAPÉ CLEAN E SUAVE ---
+# Rodapé
 st.markdown("""
 <div class="footer-container">
     <div class="footer-links">
-        <a href="https://wa.me/5517991434883" target="_blank">📱 (17) 99143-4883</a>
-        <a href="mailto:metalquimicaconsultoria@gmail.com">📧 metalquimicaconsultoria@gmail.com</a>
+        <a href="https://wa.me/5517991434883">📱 (17) 99143-4883</a>
+        <a href="mailto:metalquimicaconsultoria@gmail.com">✉️ metalquimicaconsultoria@gmail.com</a>
     </div>
-    <br>
-    <p class="footer-text">Soluções Ambientais e Regularizações</p>
-    <p class="footer-text" style="font-size: 0.75rem; color: #cbd5e1;">© 2026 Todos os direitos reservados.</p>
+    <p style="color:#94a3b8;font-size:11px;margin:8px 0 0 0">Metal Química Consultoria © 2026</p>
 </div>
 """, unsafe_allow_html=True)
