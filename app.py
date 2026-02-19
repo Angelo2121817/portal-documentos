@@ -168,7 +168,7 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
         return False
 
 # --- Bloco 3: Lógica Principal ---
-LOGO_URL = "https://generated-images.adapta.one/metalquimicaconsultoria%40gmail.com/019c5261-cf87-7648-a8f1-b054e6597b25/2026-02-12T20-00-06-149Z_Modern_minimalist_vector_logo_for_METAL_QUIMICA_CO.png"
+LOGO_URL = "https://github.com/Angelo2121817/portal-documentos/blob/main/logo_nova.png?raw=true"
 
 st.markdown(f'<div class="header-container"><img src="{LOGO_URL}" class="header-logo"></div>', unsafe_allow_html=True)
 
