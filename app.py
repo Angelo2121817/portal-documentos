@@ -157,12 +157,10 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
         anexo['Content-Disposition'] = f'attachment; filename="{nome_arquivo_original}"'
         msg.attach(anexo)
 
-        # A MARRETADA TÁ AQUI: timeout=15 pra não ficar patinando a embreagem pra sempre!
-        with smtplib.SMTP('smtp.gmail.com', 587, timeout=15) as server:
-            server.starttls()
+# O TÚNEL BLINDADO PELA PORTA DOS FUNDOS (465)
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=15) as server:
             server.login(sender_email, sender_password)
             server.send_message(msg)
-        
         return True
     except Exception as e:
         # Se der merda, agora ele avisa lá no log do Railway!
