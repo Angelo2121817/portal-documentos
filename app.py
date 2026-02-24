@@ -1,41 +1,38 @@
 import streamlit as st
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
 import urllib.parse
 import os
 
-# --- CRIAR PASTA DO COFRE ---
+# --- CRIAR PASTA DO COFRE (Backup Local) ---
 COFRE_DIR = "documentos_recebidos"
 if not os.path.exists(COFRE_DIR):
     os.makedirs(COFRE_DIR)
 
-# --- FUNÇÃO DE ENVIO DE E-MAIL (GMAIL SEGURO) ---
-# --- FUNÇÃO DE ENVIO DE E-MAIL (COM TRAVA DE TEMPO) ---
+# --- FUNÇÃO DE ENVIO DE E-MAIL (STREAMLIT + GMAIL) ---
 def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
     try:
-        import smtplib
-        from email.mime.multipart import MIMEMultipart
-        from email.mime.text import MIMEText
-        from email.mime.application import MIMEApplication
-        import os
-        
-        email_remetente = os.environ.get("EMAIL_REMETENTE")
-        senha_remetente = os.environ.get("SENHA_REMETENTE")
-        email_destino = os.environ.get("EMAIL_DESTINO")
+        # No Streamlit, usamos st.secrets!
+        email_remetente = st.secrets["EMAIL_REMETENTE"]
+        senha_remetente = st.secrets["SENHA_REMETENTE"]
+        email_destino = st.secrets["EMAIL_DESTINO"]
 
         msg = MIMEMultipart()
         msg['From'] = email_remetente
         msg['To'] = email_destino
         msg['Subject'] = f"Novo Documento: {nome_documento}"
 
-        corpo = f"O cliente anexou um documento no portal.\n\nDocumento: {nome_documento}\nArquivo: {nome_arquivo_original}"
+        corpo = f"O cliente anexou um documento no portal da Metal Química.\n\nDocumento: {nome_documento}\nArquivo: {nome_arquivo_original}"
         msg.attach(MIMEText(corpo, 'plain'))
 
         anexo = MIMEApplication(conteudo_arquivo, Name=nome_arquivo_original)
         anexo['Content-Disposition'] = f'attachment; filename="{nome_arquivo_original}"'
         msg.attach(anexo)
 
-        # A MÁGICA ESTÁ AQUI: timeout=3
-        # Se o Railway bloquear, ele desiste em 3 segundos e libera o cliente!
-        with smtplib.SMTP('smtp.gmail.com', 587, timeout=3) as server:
+        # Conexão oficial do Gmail (Porta 587) com timeout de segurança
+        with smtplib.SMTP('smtp.gmail.com', 587, timeout=10) as server:
             server.starttls()
             server.login(email_remetente, senha_remetente)
             server.send_message(msg)
@@ -43,7 +40,7 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
         return True
     
     except Exception as e:
-        print(f"E-mail falhou (mas arquivo tá no cofre): {e}")
+        print(f"ERRO DE ENVIO GMAIL: {e}")
         return False
 
 # --- Bloco 1: Configuração da Página ---
@@ -53,7 +50,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# Verificar se é modo cliente
 params = st.query_params
 is_cliente = bool(params)
 
@@ -147,16 +143,17 @@ if not is_cliente:
             docs_param = ",".join(urllib.parse.quote(d) for d in lista_final)
             cliente_param = urllib.parse.quote(nome_cliente_config)
             
-            URL_BASE_DA_SUA_APP = "portal-documentos-production.up.railway.app"
+            # URL BASE (Streamlit)
+            URL_BASE_DA_SUA_APP = "portal-documentos.streamlit.app" # Ajuste se o seu link for diferente
             url_gerada = f"https://{URL_BASE_DA_SUA_APP}?cliente={cliente_param}&docs={docs_param}"
             
             st.success("✅ Link gerado com sucesso!")
             st.code(url_gerada)
 
-    # --- NOVO: PAINEL DE DOWNLOAD DO COFRE ---
+    # --- PAINEL DE DOWNLOAD DO COFRE ---
     st.markdown("---")
-    st.markdown("### 📥 Cofre de Documentos (Arquivos Recebidos)")
-    st.warning("⚠️ **ATENÇÃO:** O sistema agora envia por e-mail E salva aqui como backup de segurança.")
+    st.markdown("### 📥 Cofre de Documentos (Backup Local)")
+    st.warning("⚠️ **ATENÇÃO:** O sistema tenta enviar por e-mail e salva aqui por precaução.")
     
     arquivos_salvos = os.listdir(COFRE_DIR)
     if arquivos_salvos:
@@ -171,7 +168,7 @@ if not is_cliente:
                 )
         
         st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("🗑️ Limpar Cofre (Apagar arquivos baixados)"):
+        if st.button("🗑️ Limpar Cofre"):
             for arq in arquivos_salvos:
                 os.remove(os.path.join(COFRE_DIR, arq))
             st.rerun()
@@ -223,10 +220,15 @@ else:
                                 with open(caminho, 'wb') as f:
                                     f.write(conteudo_bytes)
                                 
-                                # 2. TENTA ENVIAR POR E-MAIL (Usando Gmail)
-                                enviar_email_com_anexo(f"{d} ({nome_cliente})", conteudo_bytes, a.name)
+                                # 2. TENTA ENVIAR POR E-MAIL (Gmail)
+                                sucesso_email = enviar_email_com_anexo(f"{d} ({nome_cliente})", conteudo_bytes, a.name)
                                 
-                                ok += 1
+                                if sucesso_email:
+                                    ok += 1
+                                else:
+                                    # Se falhou o e-mail mas salvou no cofre, consideramos como erro parcial
+                                    print(f"Atenção: E-mail falhou, mas salvo no cofre: {d}")
+                                    ok += 1 # Conta como OK para o cliente não travar
                             except Exception as e:
                                 print(e)
                                 erros.append(d)
