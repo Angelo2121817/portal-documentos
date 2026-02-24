@@ -16,8 +16,8 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
         try:
         # No Streamlit, usamos as "etiquetas" (nomes das variáveis)
            email_remetente = st.secrets["SENDER_EMAIL"]
-        senha_remetente = st.secrets["SENDER_PASSWORD"]
-        email_destino = st.secrets["RECIPIENT_EMAIL"]
+           senha_remetente = st.secrets["SENDER_PASSWORD"]
+           email_destino = st.secrets["RECIPIENT_EMAIL"]
     
         msg = MIMEMultipart()
         msg['From'] = email_remetente
