@@ -7,6 +7,42 @@ COFRE_DIR = "documentos_recebidos"
 if not os.path.exists(COFRE_DIR):
     os.makedirs(COFRE_DIR)
 
+# --- FUNÇÃO DE ENVIO DE E-MAIL (GMAIL SEGURO) ---
+def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
+    try:
+        import smtplib
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.text import MIMEText
+        from email.mime.application import MIMEApplication
+        
+        email_remetente = os.environ.get("EMAIL_REMETENTE")
+        senha_remetente = os.environ.get("SENHA_REMETENTE")
+        email_destino = os.environ.get("EMAIL_DESTINO")
+
+        msg = MIMEMultipart()
+        msg['From'] = email_remetente
+        msg['To'] = email_destino
+        msg['Subject'] = f"Novo Documento: {nome_documento}"
+
+        corpo = f"O cliente anexou um documento no portal da Metal Química.\n\nDocumento: {nome_documento}\nArquivo: {nome_arquivo_original}"
+        msg.attach(MIMEText(corpo, 'plain'))
+
+        anexo = MIMEApplication(conteudo_arquivo, Name=nome_arquivo_original)
+        anexo['Content-Disposition'] = f'attachment; filename="{nome_arquivo_original}"'
+        msg.attach(anexo)
+
+        # Conexão oficial do Gmail para aplicativos (Porta 587)
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            server.starttls() # Inicia a criptografia segura
+            server.login(email_remetente, senha_remetente)
+            server.send_message(msg)
+            
+        return True
+    
+    except Exception as e:
+        print(f"ERRO DE ENVIO GMAIL: {e}")
+        return False
+
 # --- Bloco 1: Configuração da Página ---
 st.set_page_config(
     page_title="Portal Metal Química",
@@ -117,7 +153,7 @@ if not is_cliente:
     # --- NOVO: PAINEL DE DOWNLOAD DO COFRE ---
     st.markdown("---")
     st.markdown("### 📥 Cofre de Documentos (Arquivos Recebidos)")
-    st.warning("⚠️ **ATENÇÃO:** Baixe os arquivos assim que o cliente avisar. O servidor apaga esta pasta se reiniciar.")
+    st.warning("⚠️ **ATENÇÃO:** O sistema agora envia por e-mail E salva aqui como backup de segurança.")
     
     arquivos_salvos = os.listdir(COFRE_DIR)
     if arquivos_salvos:
@@ -168,29 +204,35 @@ else:
         if arquivos:
             c1, c2, c3 = st.columns([1,2,1])
             with c2:
-                if st.button('📤 SALVAR DOCUMENTOS'):
-                    with st.spinner("Salvando em ambiente seguro..."):
+                if st.button('📤 ENVIAR DOCUMENTOS'):
+                    with st.spinner("Enviando documentos..."):
                         erros, ok = [], 0
                         for d, a in arquivos.items():
                             try:
-                                # Cria um nome de arquivo organizando: Cliente - Documento - NomeOriginal
+                                conteudo_bytes = a.getvalue()
+                                
+                                # 1. SALVA NO COFRE LOCAL (Backup)
                                 nome_limpo = nome_cliente.replace(" ", "_").replace("/", "-")
                                 doc_limpo = d.replace(" ", "_").replace("/", "-")
                                 nome_final = f"{nome_limpo}-{doc_limpo}-{a.name}"
                                 caminho = os.path.join(COFRE_DIR, nome_final)
                                 
-                                # Salva o arquivo no disco do Railway
                                 with open(caminho, 'wb') as f:
-                                    f.write(a.getvalue())
+                                    f.write(conteudo_bytes)
+                                
+                                # 2. TENTA ENVIAR POR E-MAIL (Usando Gmail)
+                                enviar_email_com_anexo(f"{d} ({nome_cliente})", conteudo_bytes, a.name)
+                                
                                 ok += 1
                             except Exception as e:
+                                print(e)
                                 erros.append(d)
                         
                         if not erros:
                             st.balloons()
-                            st.success(f"Sucesso! {ok} documento(s) enviados e salvos com segurança.")
+                            st.success(f"Sucesso! {ok} documento(s) enviados com segurança.")
                         else:
-                            st.error(f"Erro ao salvar: {', '.join(erros)}")
+                            st.error(f"Erro ao processar: {', '.join(erros)}")
 
 # Rodapé
 st.markdown("""
