@@ -237,7 +237,7 @@ if not is_cliente:
             cliente_param = urllib.parse.quote(nome_cliente_config)
             
             # URL BASE (Substitua se necessário)
-            URL_BASE_DA_SUA_APP = "app-documentos-7l5ecrvyv7lhjl3ska9e3t.streamlit.app"
+            URL_BASE_DA_SUA_APP = "portal-documentos-production.up.railway.app"
             url_gerada = f"https://{URL_BASE_DA_SUA_APP}?cliente={cliente_param}&docs={docs_param}"
             
             st.success("✅ Link gerado com sucesso!")
