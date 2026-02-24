@@ -1,7 +1,7 @@
 import streamlit as st
 import smtplib
-import socket
 import ssl
+import os  # <-- NOVO IMPORT OBRIGATÓRIO PARA O RAILWAY
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
@@ -51,7 +51,7 @@ st.markdown("""
     .header-logo {
         width: 550px;
         max-width: 100%;
-        margin-bottom: -20px; /* Aproximação visual */
+        margin-bottom: -20px;
         display: block;
     }
 
@@ -143,9 +143,15 @@ st.markdown("""
 # --- Bloco 2: Função de Envio ---
 def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
     try:
-        sender_email = os.environ.get["SENDER_EMAIL"]
-        sender_password = os.environ.get["SENDER_PASSWORD"]
-        recipient_email = os.environ.get["RECIPIENT_EMAIL"]
+        # Puxando variáveis de ambiente do Railway (removido o st.secrets)
+        sender_email = os.environ.get("SENDER_EMAIL")
+        sender_password = os.environ.get("SENDER_PASSWORD")
+        recipient_email = os.environ.get("RECIPIENT_EMAIL")
+
+        # Trava de segurança para caso você esqueça de colocar no Railway
+        if not sender_email or not sender_password or not recipient_email:
+            print("ERRO FATAL: Faltam as variáveis no painel do Railway!")
+            return False
 
         msg = MIMEMultipart()
         msg['From'] = sender_email
@@ -159,14 +165,10 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
         anexo['Content-Disposition'] = f'attachment; filename="{nome_arquivo_original}"'
         msg.attach(anexo)
 
-        # --- LIGAÇÃO DIRETA IGNORANDO O COMPUTADOR DE BORDO (GAMBIARRA MASTER) ---
-        gmail_ip = socket.gethostbyname('smtp.gmail.com')
-        
+        # CONEXÃO LIMPA E SEGURA (Removido o socket gambiarra que o Railway bloqueia)
         contexto = ssl.create_default_context()
-        contexto.check_hostname = False
-        contexto.verify_mode = ssl.CERT_NONE
-
-        with smtplib.SMTP_SSL(gmail_ip, 465, timeout=15, context=contexto) as server:
+        
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=contexto) as server:
             server.login(sender_email, sender_password)
             server.send_message(msg)
         
@@ -175,6 +177,7 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
     except Exception as e:
         print(f"ERRO FATAL NO ENVIO DE EMAIL: {e}")
         return False
+
 # --- Bloco 3: Lógica Principal ---
 LOGO_URL = "https://github.com/Angelo2121817/portal-documentos/blob/main/logo_nova.png?raw=true"
 
@@ -185,7 +188,6 @@ if not is_cliente:
     st.markdown("### ⚙️ Configuração de Link")
     st.info("Painel administrativo para geração de links de upload.")
 
-    # ADICIONADO "Outros (Especificar)" NA LISTA
     MASTER_LISTA_DOCUMENTOS = [
         'Matrícula do terreno ou IPTU mais recente',
         'Contrato Social',
@@ -206,7 +208,7 @@ if not is_cliente:
         'Laudo Analítico',
         'Comprovante de Pagamento (CETESB)',
         'Copia CNH Representante Legal',
-        'Outros (Especificar)' # <--- NOVO ITEM
+        'Outros (Especificar)' 
     ]
     
     c1, c2 = st.columns(2)
@@ -215,7 +217,6 @@ if not is_cliente:
     with c2:
         documentos_selecionados = st.multiselect("Selecione os documentos:", options=sorted(MASTER_LISTA_DOCUMENTOS))
 
-    # LÓGICA PARA EDITAR O NOME DE "OUTROS"
     nome_outros = ""
     if 'Outros (Especificar)' in documentos_selecionados:
         st.markdown("---")
@@ -225,7 +226,6 @@ if not is_cliente:
     st.markdown("<br>", unsafe_allow_html=True)
 
     if st.button("🔗 GERAR LINK"):
-        # Validação: Se selecionou Outros, tem que digitar o nome
         if 'Outros (Especificar)' in documentos_selecionados and not nome_outros:
             st.error("⚠️ Por favor, digite o nome para o documento 'Outros'.")
         elif not nome_cliente_config:
@@ -233,18 +233,16 @@ if not is_cliente:
         elif not documentos_selecionados:
             st.error("⚠️ Por favor, selecione pelo menos um documento.")
         else:
-            # Substitui "Outros (Especificar)" pelo nome digitado na lista final
             lista_final = []
             for doc in documentos_selecionados:
                 if doc == 'Outros (Especificar)':
-                    lista_final.append(nome_outros) # Usa o nome personalizado
+                    lista_final.append(nome_outros) 
                 else:
                     lista_final.append(doc)
 
             docs_param = ",".join(urllib.parse.quote(d) for d in lista_final)
             cliente_param = urllib.parse.quote(nome_cliente_config)
             
-            # URL BASE (Substitua se necessário)
             URL_BASE_DA_SUA_APP = "portal-documentos-production.up.railway.app"
             url_gerada = f"https://{URL_BASE_DA_SUA_APP}?cliente={cliente_param}&docs={docs_param}"
             
