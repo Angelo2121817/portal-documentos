@@ -159,13 +159,20 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
         anexo['Content-Disposition'] = f'attachment; filename="{nome_arquivo_original}"'
         msg.attach(anexo)
 
-# O TÚNEL BLINDADO PELA PORTA DOS FUNDOS (465)
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=15) as server:
+        # --- LIGAÇÃO DIRETA IGNORANDO O COMPUTADOR DE BORDO (GAMBIARRA MASTER) ---
+        gmail_ip = socket.gethostbyname('smtp.gmail.com')
+        
+        contexto = ssl.create_default_context()
+        contexto.check_hostname = False
+        contexto.verify_mode = ssl.CERT_NONE
+
+        with smtplib.SMTP_SSL(gmail_ip, 465, timeout=15, context=contexto) as server:
             server.login(sender_email, sender_password)
             server.send_message(msg)
+        
         return True
+    
     except Exception as e:
-        # Se der merda, agora ele avisa lá no log do Railway!
         print(f"ERRO FATAL NO ENVIO DE EMAIL: {e}")
         return False
 # --- Bloco 3: Lógica Principal ---
