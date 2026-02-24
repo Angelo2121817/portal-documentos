@@ -150,23 +150,24 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
         msg['To'] = recipient_email
         msg['Subject'] = f"Novo Documento Recebido: {nome_documento}"
 
-        corpo = f"Olá Angelo,\n\nUm novo documento foi enviado através do portal.\n\nTipo de Documento: {nome_documento}\nNome Original do Arquivo: {nome_arquivo_original}\n\nO arquivo está em anexo."
+        corpo = f"Olá Angelo,\n\nUm novo documento foi enviado através do portal da Metal Química.\n\nTipo de Documento: {nome_documento}\nNome Original do Arquivo: {nome_arquivo_original}\n\nO arquivo está em anexo."
         msg.attach(MIMEText(corpo, 'plain'))
 
         anexo = MIMEApplication(conteudo_arquivo, Name=nome_arquivo_original)
         anexo['Content-Disposition'] = f'attachment; filename="{nome_arquivo_original}"'
         msg.attach(anexo)
 
-        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+        # A MARRETADA TÁ AQUI: timeout=15 pra não ficar patinando a embreagem pra sempre!
+        with smtplib.SMTP('smtp.gmail.com', 587, timeout=15) as server:
             server.starttls()
             server.login(sender_email, sender_password)
             server.send_message(msg)
         
         return True
     except Exception as e:
-        print(f"Erro no envio de e-mail: {e}")
+        # Se der merda, agora ele avisa lá no log do Railway!
+        print(f"ERRO FATAL NO ENVIO DE EMAIL: {e}")
         return False
-
 # --- Bloco 3: Lógica Principal ---
 LOGO_URL = "https://github.com/Angelo2121817/portal-documentos/blob/main/logo_nova.png?raw=true"
 
