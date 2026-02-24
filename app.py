@@ -15,9 +15,10 @@ if not os.path.exists(COFRE_DIR):
 def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
     try:
         # No Streamlit, usamos st.secrets!
-        email_remetente = st.secrets["EMAIL_REMETENTE"]
-        senha_remetente = st.secrets["SENHA_REMETENTE"]
-        email_destino = st.secrets["EMAIL_DESTINO"]
+        email_remetente = st.secrets[documentosmetalquimica@gmail.com
+]
+        senha_remetente = st.secrets["ppvl tuta vkoa ucil"]
+        email_destino = st.secrets["metalquimicaconsultoria@gmail.com"]
 
         msg = MIMEMultipart()
         msg['From'] = email_remetente
