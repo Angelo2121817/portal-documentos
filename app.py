@@ -13,12 +13,12 @@ if not os.path.exists(COFRE_DIR):
 
 # --- FUNÇÃO DE ENVIO DE E-MAIL (STREAMLIT + GMAIL) ---
 def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
-        try:
+    try:
         # No Streamlit, usamos as "etiquetas" (nomes das variáveis)
-           email_remetente = st.secrets["SENDER_EMAIL"]
-           senha_remetente = st.secrets["SENDER_PASSWORD"]
-           email_destino = st.secrets["RECIPIENT_EMAIL"]
-    
+        email_remetente = st.secrets["SENDER_EMAIL"]
+        senha_remetente = st.secrets["SENDER_PASSWORD"]
+        email_destino = st.secrets["RECIPIENT_EMAIL"]
+
         msg = MIMEMultipart()
         msg['From'] = email_remetente
         msg['To'] = email_destino
@@ -32,6 +32,7 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
         msg.attach(anexo)
 
         # Conexão oficial do Gmail (Porta 587) com timeout de segurança
+        import smtplib
         with smtplib.SMTP('smtp.gmail.com', 587, timeout=10) as server:
             server.starttls()
             server.login(email_remetente, senha_remetente)
@@ -42,7 +43,6 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
     except Exception as e:
         print(f"ERRO DE ENVIO GMAIL: {e}")
         return False
-
 # --- Bloco 1: Configuração da Página ---
 st.set_page_config(
     page_title="Portal Metal Química",
