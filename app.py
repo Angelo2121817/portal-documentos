@@ -1,11 +1,11 @@
 import streamlit as st
-import smtplib
-import ssl
-import os  # <-- NOVO IMPORT OBRIGATÓRIO PARA O RAILWAY
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.application import MIMEApplication
 import urllib.parse
+import os
+
+# --- CRIAR PASTA DO COFRE ---
+COFRE_DIR = "documentos_recebidos"
+if not os.path.exists(COFRE_DIR):
+    os.makedirs(COFRE_DIR)
 
 # --- Bloco 1: Configuração da Página ---
 st.set_page_config(
@@ -18,17 +18,12 @@ st.set_page_config(
 params = st.query_params
 is_cliente = bool(params)
 
-# --- CSS OTIMIZADO (VISUAL APROVADO: ~1 POLEGADA ENTRE LOGO E NOME) ---
+# --- CSS OTIMIZADO ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
     * { font-family: 'Inter', sans-serif; color: #334155; }
-
-    [data-testid="stAppViewContainer"] {
-        background-color: #f8fafc !important;
-    }
-
+    [data-testid="stAppViewContainer"] { background-color: #f8fafc !important; }
     .main .block-container {
         background-color: #ffffff !important;
         border-radius: 12px !important;
@@ -37,178 +32,50 @@ st.markdown("""
         max-width: 1200px !important;
         border: 1px solid #e2e8f0;
     }
-
-    /* Header - ESPAÇAMENTO DE ~1 POLEGADA */
     .header-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 5px 0 0px 0;
-        padding-bottom: 0px;
-        border-bottom: 1px solid #e2e8f0;
+        display: flex; flex-direction: column; align-items: center;
+        margin: 5px 0 0px 0; border-bottom: 1px solid #e2e8f0;
     }
-    
-    .header-logo {
-        width: 550px;
-        max-width: 100%;
-        margin-bottom: -20px;
-        display: block;
-    }
-
-    /* Cards compactos */
+    .header-logo { width: 550px; max-width: 100%; margin-bottom: -20px; display: block; }
     .doc-card {
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-left: 4px solid #64748b;
-        border-radius: 8px;
-        padding: 12px;
-        margin-bottom: 8px;
+        background: #fff; border: 1px solid #e2e8f0; border-left: 4px solid #64748b;
+        border-radius: 8px; padding: 12px; margin-bottom: 8px;
     }
-
-    .doc-title {
-        font-weight: 600;
-        color: #334155;
-        font-size: 15px;
-    }
-
-    /* BOTÕES COMPACTOS */
+    .doc-title { font-weight: 600; color: #334155; font-size: 15px; }
     .stButton > button {
-        background: #64748b !important;
-        color: #fff !important;
-        border: none !important;
-        padding: 8px 16px !important;
-        font-size: 13px !important;
-        font-weight: 600 !important;
-        border-radius: 6px !important;
-        width: 100%;
-        min-height: 36px !important;
+        background: #64748b !important; color: #fff !important; border: none !important;
+        padding: 8px 16px !important; font-size: 13px !important; font-weight: 600 !important;
+        border-radius: 6px !important; width: 100%; min-height: 36px !important;
     }
-    
-    .stButton > button:hover {
-        background: #475569 !important;
-    }
-
-    /* File uploader mais compacto */
-    .stFileUploader > div > div {
-        padding: 6px !important;
-    }
-    
-    .stFileUploader small {
-        font-size: 12px !important;
-    }
-
-    /* Títulos - DISTÂNCIA DE ~1 POLEGADA DA LOGO */
-    .cliente-subtitulo {
-        text-align: center;
-        color: #94a3b8;
-        font-size: 16px;
-        margin: 25px 0 2px 0;
-        padding-top: 0px;
-    }
-    
-    .cliente-nome {
-        text-align: center;
-        color: #334155;
-        font-size: 32px;
-        font-weight: 700;
-        margin: 0 0 6px 0;
-    }
-
-    /* Rodapé */
-    .footer-container {
-        margin-top: 30px;
-        padding-top: 20px;
-        border-top: 1px solid #e2e8f0;
-        text-align: center;
-    }
-    
-    .footer-links a {
-        color: #64748b;
-        text-decoration: none;
-        font-weight: 600;
-        margin: 0 12px;
-        font-size: 14px;
-    }
-
-    /* Alerts e info compactos */
-    .stAlert {
-        padding: 10px 14px !important;
-    }
-
+    .stButton > button:hover { background: #475569 !important; }
+    .stFileUploader > div > div { padding: 6px !important; }
+    .stFileUploader small { font-size: 12px !important; }
+    .cliente-subtitulo { text-align: center; color: #94a3b8; font-size: 16px; margin: 25px 0 2px 0; }
+    .cliente-nome { text-align: center; color: #334155; font-size: 32px; font-weight: 700; margin: 0 0 6px 0; }
+    .footer-container { margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: center; }
+    .footer-links a { color: #64748b; text-decoration: none; font-weight: 600; margin: 0 12px; font-size: 14px; }
+    .stAlert { padding: 10px 14px !important; }
     hr { margin: 6px 0 !important; }
-
 </style>
 """, unsafe_allow_html=True)
 
-# --- Bloco 2: Função de Envio ---
-def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
-    try:
-        # Puxando variáveis de ambiente do Railway (removido o st.secrets)
-        sender_email = os.environ.get("SENDER_EMAIL")
-        sender_password = os.environ.get("SENDER_PASSWORD")
-        recipient_email = os.environ.get("RECIPIENT_EMAIL")
-
-        # Trava de segurança para caso você esqueça de colocar no Railway
-        if not sender_email or not sender_password or not recipient_email:
-            print("ERRO FATAL: Faltam as variáveis no painel do Railway!")
-            return False
-
-        msg = MIMEMultipart()
-        msg['From'] = sender_email
-        msg['To'] = recipient_email
-        msg['Subject'] = f"Novo Documento Recebido: {nome_documento}"
-
-        corpo = f"Olá Angelo,\n\nUm novo documento foi enviado através do portal da Metal Química.\n\nTipo de Documento: {nome_documento}\nNome Original do Arquivo: {nome_arquivo_original}\n\nO arquivo está em anexo."
-        msg.attach(MIMEText(corpo, 'plain'))
-
-        anexo = MIMEApplication(conteudo_arquivo, Name=nome_arquivo_original)
-        anexo['Content-Disposition'] = f'attachment; filename="{nome_arquivo_original}"'
-        msg.attach(anexo)
-
-        # CONEXÃO LIMPA E SEGURA (Removido o socket gambiarra que o Railway bloqueia)
-        contexto = ssl.create_default_context()
-        
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=contexto) as server:
-            server.login(sender_email, sender_password)
-            server.send_message(msg)
-        
-        return True
-    
-    except Exception as e:
-        print(f"ERRO FATAL NO ENVIO DE EMAIL: {e}")
-        return False
-
-# --- Bloco 3: Lógica Principal ---
 LOGO_URL = "https://github.com/Angelo2121817/portal-documentos/blob/main/logo_nova.png?raw=true"
-
 st.markdown(f'<div class="header-container"><img src="{LOGO_URL}" class="header-logo"></div>', unsafe_allow_html=True)
 
-# MODO ADMIN
+# ==========================================
+# MODO ADMIN (VOCÊ)
+# ==========================================
 if not is_cliente:
     st.markdown("### ⚙️ Configuração de Link")
     st.info("Painel administrativo para geração de links de upload.")
 
     MASTER_LISTA_DOCUMENTOS = [
-        'Matrícula do terreno ou IPTU mais recente',
-        'Contrato Social',
-        'Certificado do IBAMA',
-        'Procuração Assinada',
-        'Documentação EPP assinada',
-        'Certidão Simplificada da JUSCESP',
-        'Layout',
-        'Planta do Prédio',
-        'Cartão CNPJ',
-        'Certidão de Uso e Ocupação do Solo',
-        'CICAR rural',
-        'Dados do Proprietário',
-        'Bombeiros (AVCB)',
-        'Contas de Agua ou Outorga',
-        'Fluxograma do Processo Produtivo',
-        'CADRI',
-        'Laudo Analítico',
-        'Comprovante de Pagamento (CETESB)',
-        'Copia CNH Representante Legal',
-        'Outros (Especificar)' 
+        'Matrícula do terreno ou IPTU mais recente', 'Contrato Social', 'Certificado do IBAMA',
+        'Procuração Assinada', 'Documentação EPP assinada', 'Certidão Simplificada da JUSCESP',
+        'Layout', 'Planta do Prédio', 'Cartão CNPJ', 'Certidão de Uso e Ocupação do Solo',
+        'CICAR rural', 'Dados do Proprietário', 'Bombeiros (AVCB)', 'Contas de Agua ou Outorga',
+        'Fluxograma do Processo Produtivo', 'CADRI', 'Laudo Analítico', 'Comprovante de Pagamento (CETESB)',
+        'Copia CNH Representante Legal', 'Outros (Especificar)' 
     ]
     
     c1, c2 = st.columns(2)
@@ -222,8 +89,6 @@ if not is_cliente:
         st.markdown("---")
         st.warning("✏️ Você selecionou 'Outros'. Digite abaixo o nome do documento:")
         nome_outros = st.text_input("Nome do documento personalizado:", placeholder="Ex: Laudo de Ruído 2024")
-
-    st.markdown("<br>", unsafe_allow_html=True)
 
     if st.button("🔗 GERAR LINK"):
         if 'Outros (Especificar)' in documentos_selecionados and not nome_outros:
@@ -249,7 +114,34 @@ if not is_cliente:
             st.success("✅ Link gerado com sucesso!")
             st.code(url_gerada)
 
+    # --- NOVO: PAINEL DE DOWNLOAD DO COFRE ---
+    st.markdown("---")
+    st.markdown("### 📥 Cofre de Documentos (Arquivos Recebidos)")
+    st.warning("⚠️ **ATENÇÃO:** Baixe os arquivos assim que o cliente avisar. O servidor apaga esta pasta se reiniciar.")
+    
+    arquivos_salvos = os.listdir(COFRE_DIR)
+    if arquivos_salvos:
+        for arq in arquivos_salvos:
+            caminho_arq = os.path.join(COFRE_DIR, arq)
+            with open(caminho_arq, "rb") as f:
+                st.download_button(
+                    label=f"⬇️ Baixar: {arq}", 
+                    data=f, 
+                    file_name=arq,
+                    key=arq
+                )
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("🗑️ Limpar Cofre (Apagar arquivos baixados)"):
+            for arq in arquivos_salvos:
+                os.remove(os.path.join(COFRE_DIR, arq))
+            st.rerun()
+    else:
+        st.info("Nenhum documento no cofre no momento.")
+
+# ==========================================
 # MODO CLIENTE
+# ==========================================
 else:
     nome_cliente = urllib.parse.unquote(params.get("cliente", "Não identificado"))
     docs = urllib.parse.unquote(params.get("docs", "")).split(',') if params.get("docs") else []
@@ -276,20 +168,29 @@ else:
         if arquivos:
             c1, c2, c3 = st.columns([1,2,1])
             with c2:
-                if st.button('📤 ENVIAR DOCUMENTOS'):
-                    with st.spinner("Enviando..."):
+                if st.button('📤 SALVAR DOCUMENTOS'):
+                    with st.spinner("Salvando em ambiente seguro..."):
                         erros, ok = [], 0
                         for d, a in arquivos.items():
-                            if enviar_email_com_anexo(f"{d} ({nome_cliente})", a.getvalue(), a.name):
+                            try:
+                                # Cria um nome de arquivo organizando: Cliente - Documento - NomeOriginal
+                                nome_limpo = nome_cliente.replace(" ", "_").replace("/", "-")
+                                doc_limpo = d.replace(" ", "_").replace("/", "-")
+                                nome_final = f"{nome_limpo}-{doc_limpo}-{a.name}"
+                                caminho = os.path.join(COFRE_DIR, nome_final)
+                                
+                                # Salva o arquivo no disco do Railway
+                                with open(caminho, 'wb') as f:
+                                    f.write(a.getvalue())
                                 ok += 1
-                            else:
+                            except Exception as e:
                                 erros.append(d)
                         
                         if not erros:
                             st.balloons()
-                            st.success(f"Sucesso! {ok} documento(s) enviados.")
+                            st.success(f"Sucesso! {ok} documento(s) enviados e salvos com segurança.")
                         else:
-                            st.error(f"Erro ao enviar: {', '.join(erros)}")
+                            st.error(f"Erro ao salvar: {', '.join(erros)}")
 
 # Rodapé
 st.markdown("""
