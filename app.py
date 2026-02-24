@@ -146,7 +146,7 @@ if not is_cliente:
             
             # URL BASE (Streamlit)
             URL_BASE_DA_SUA_APP = "portal-documentos.streamlit.app" # Ajuste se o seu link for diferente
-            url_gerada = f"https://{URL_BASE_DA_SUA_APP}?cliente={cliente_param}&docs={docs_param}"
+            url_gerada = f"https://{https://app-documentos-7l5ecrvyv7lhjl3ska9e3t.streamlit.app/}?cliente={cliente_param}&docs={docs_param}"
             
             st.success("✅ Link gerado com sucesso!")
             st.code(url_gerada)
