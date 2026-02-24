@@ -8,12 +8,14 @@ if not os.path.exists(COFRE_DIR):
     os.makedirs(COFRE_DIR)
 
 # --- FUNÇÃO DE ENVIO DE E-MAIL (GMAIL SEGURO) ---
+# --- FUNÇÃO DE ENVIO DE E-MAIL (COM TRAVA DE TEMPO) ---
 def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
     try:
         import smtplib
         from email.mime.multipart import MIMEMultipart
         from email.mime.text import MIMEText
         from email.mime.application import MIMEApplication
+        import os
         
         email_remetente = os.environ.get("EMAIL_REMETENTE")
         senha_remetente = os.environ.get("SENHA_REMETENTE")
@@ -24,23 +26,24 @@ def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_origin
         msg['To'] = email_destino
         msg['Subject'] = f"Novo Documento: {nome_documento}"
 
-        corpo = f"O cliente anexou um documento no portal da Metal Química.\n\nDocumento: {nome_documento}\nArquivo: {nome_arquivo_original}"
+        corpo = f"O cliente anexou um documento no portal.\n\nDocumento: {nome_documento}\nArquivo: {nome_arquivo_original}"
         msg.attach(MIMEText(corpo, 'plain'))
 
         anexo = MIMEApplication(conteudo_arquivo, Name=nome_arquivo_original)
         anexo['Content-Disposition'] = f'attachment; filename="{nome_arquivo_original}"'
         msg.attach(anexo)
 
-        # Conexão oficial do Gmail para aplicativos (Porta 587)
-        with smtplib.SMTP('smtp.gmail.com', 587) as server:
-            server.starttls() # Inicia a criptografia segura
+        # A MÁGICA ESTÁ AQUI: timeout=3
+        # Se o Railway bloquear, ele desiste em 3 segundos e libera o cliente!
+        with smtplib.SMTP('smtp.gmail.com', 587, timeout=3) as server:
+            server.starttls()
             server.login(email_remetente, senha_remetente)
             server.send_message(msg)
             
         return True
     
     except Exception as e:
-        print(f"ERRO DE ENVIO GMAIL: {e}")
+        print(f"E-mail falhou (mas arquivo tá no cofre): {e}")
         return False
 
 # --- Bloco 1: Configuração da Página ---
