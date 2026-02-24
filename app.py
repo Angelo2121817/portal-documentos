@@ -7,6 +7,14 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 import urllib.parse
 
+# --- INÍCIO DA CORREÇÃO DE REDE DO RAILWAY (FORÇAR IPv4) ---
+import socket
+orig_getaddrinfo = socket.getaddrinfo
+def getaddrinfo_ipv4(*args, **kwargs):
+    res = orig_getaddrinfo(*args, **kwargs)
+    return [r for r in res if r[0] == socket.AF_INET]
+socket.getaddrinfo = getaddrinfo_ipv4
+# --- FIM DA CORREÇÃO ---
 # --- Bloco 1: Configuração da Página ---
 st.set_page_config(
     page_title="Portal Metal Química",
