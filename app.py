@@ -143,9 +143,10 @@ if not is_cliente:
             docs_param = ",".join(urllib.parse.quote(d) for d in lista_final)
             cliente_param = urllib.parse.quote(nome_cliente_config)
             
-            # URL BASE (Streamlit)
+           
+             # URL BASE (Streamlit)
             URL_BASE_DA_SUA_APP = "app-documentos-7l5ecrvyv7lhjl3ska9e3t.streamlit.app"
-            url_gerada = f"https://{app-documentos-7l5ecrvyv7lhjl3ska9e3t.streamlit.app}/?cliente={cliente_param}&docs={docs_param}"
+            url_gerada = f"https://{URL_BASE_DA_SUA_APP}/?cliente={cliente_param}&docs={docs_param}"
             
             st.success("✅ Link gerado com sucesso!")
             st.code(url_gerada)
