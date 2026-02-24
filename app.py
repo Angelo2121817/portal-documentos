@@ -143,9 +143,9 @@ st.markdown("""
 # --- Bloco 2: Função de Envio ---
 def enviar_email_com_anexo(nome_documento, conteudo_arquivo, nome_arquivo_original):
     try:
-        sender_email = st.secrets["SENDER_EMAIL"]
-        sender_password = st.secrets["SENDER_PASSWORD"]
-        recipient_email = st.secrets["RECIPIENT_EMAIL"]
+        sender_email = os.environ.get["SENDER_EMAIL"]
+        sender_password = os.environ.get["SENDER_PASSWORD"]
+        recipient_email = os.environ.get["RECIPIENT_EMAIL"]
 
         msg = MIMEMultipart()
         msg['From'] = sender_email
